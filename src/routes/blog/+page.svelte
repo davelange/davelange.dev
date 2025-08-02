@@ -7,5 +7,5 @@
 <p>blog index</p>
 
 {#each data.posts as post (post)}
-  <a href={`/blog/${post}`}>{post}</a><br />
+  <a href={`/blog/${post.slug}`}>{post.title}</a><br />
 {/each}

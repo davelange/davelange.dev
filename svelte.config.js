@@ -18,7 +18,7 @@ const config = {
       strict: true
     })
   },
-  extensions: [".svelte", ".svx"]
+  extensions: [".svelte", ".svx", ".md"]
 };
 
 export default config;

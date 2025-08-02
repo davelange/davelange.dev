@@ -1,38 +1,21 @@
-import { readdirSync, statSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import Collection from "./collection";
+import * as z from "zod";
 
-/**
- * Gets a list of all files in the ./blog directory
- * @returns Array of filenames (without path)
- */
-export function getBlogFiles(): string[] {
-  try {
-    const blogPath = join(process.cwd(), "src", "content", "blog");
-    const files = readdirSync(blogPath);
+const blogPostSchema = z.object({
+  title: z.string(),
+  publishedAt: z
+    .string()
+    .or(z.date())
+    .transform((val) => new Date(val)),
+  description: z.string(),
+  canonical: z.string().optional(),
 
-    // Filter out directories and return only files
-    return files
-      .filter((file: string) => {
-        const filePath = join(blogPath, file);
-        return statSync(filePath).isFile();
-      })
-      .map((file: string) => file.replace(".mdx", ""));
-  } catch (error) {
-    console.error("Error reading blog directory:", error);
-    return [];
-  }
-}
+  tags: z.array(z.string()).optional(),
+  draft: z.boolean().optional().default(false),
+  featured: z.boolean().optional().default(false)
+});
 
-/**
- * Gets the contents of a file
- * @param path - Path to the file
- * @returns The contents of the file as a string, or null if there was an error
- */
-export function getFileContents(path: string): string | null {
-  try {
-    return readFileSync(join(process.cwd(), "src", "content", "blog", `${path}.mdx`), "utf-8");
-  } catch (error) {
-    console.error(`Error reading file ${path}:`, error);
-    return null;
-  }
-}
+export const blogPosts = new Collection({
+  path: "blog",
+  schema: blogPostSchema
+});

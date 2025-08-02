@@ -1,8 +1,8 @@
-import { getBlogFiles } from "../../content";
 import type { PageServerLoad } from "./$types";
+import { blogPosts } from "../../content";
 
 export const load: PageServerLoad = async () => {
-  const posts = getBlogFiles();
+  const posts = blogPosts.getItems();
 
   return {
     posts
