@@ -6,6 +6,6 @@
 
 <p>blog index</p>
 
-{#each data.posts as post (post.id)}
-  <a href={`/blog/${post.id}`}>{post.title}</a><br />
+{#each data.posts as post (post)}
+  <a href={`/blog/${post}`}>{post}</a><br />
 {/each}

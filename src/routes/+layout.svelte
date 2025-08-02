@@ -14,7 +14,6 @@
   <a href="/">Home</a>
   <a href="/about">About</a>
   <a href="/blog">Blog</a>
-  <a href="/blog/post-1">Blog Post 1</a>
 </header>
 
 {@render children?.()}
