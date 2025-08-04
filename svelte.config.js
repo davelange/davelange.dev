@@ -16,7 +16,10 @@ const config = {
       fallback: undefined,
       precompress: false,
       strict: true
-    })
+    }),
+    alias: {
+      $content: "src/content/*"
+    }
   },
   extensions: [".svelte", ".svx", ".md"]
 };
