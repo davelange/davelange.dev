@@ -5,6 +5,9 @@ description: >
   custom stores, stores of stores - there's a lot of options out there.
 publishedAt: 2023-03-01T00:00:00.000Z
 canonical: 'https://blog.finiam.com/blog/using-custom-svelte-stores'
+tags:
+  - react
+  - frontend
 ---
 
 *This was originally written for [Finiam](https://blog.finiam.com/blog/using-custom-svelte-stores)*

@@ -3,6 +3,9 @@ title: On demand ISR with Next.JS and Sanity
 publishedAt: November 2022
 description: We’ve been exploring smarter ways of updating static sites. With Next.JS’s on-demand ISR and Sanity CMS, we can keep content up to date and build times down.
 canonical: https://blog.finiam.com/blog/on-demand-isr-with-next-js-and-sanity
+tags:
+  - react
+  - frontend
 ---
 
 _This was originally written for [Finiam](https://blog.finiam.com/blog/on-demand-isr-with-next-js-and-sanity)_
