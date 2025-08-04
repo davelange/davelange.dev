@@ -8,8 +8,6 @@ export const load: PageServerLoad = async ({ params }) => {
     }
   });
 
-  console.log(posts);
-
   return {
     posts,
     category: params.category

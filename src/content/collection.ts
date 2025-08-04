@@ -36,6 +36,7 @@ class Collection<
   }
 
   compileEntries() {
+    console.log("Compiling entries...");
     const entries: Array<Item> = [];
     const paths = import.meta.glob(`/src/content/**/*.svx`, {
       eager: true
@@ -45,12 +46,24 @@ class Collection<
       if (!path.includes(`/src/content/${this.path}`)) continue;
 
       const file = paths[path] as { metadata: Item };
-      const slug = path.split("/").at(-1)?.replace(".svx", "");
+      const slug = path
+        .split("/")
+        .at(-1)
+        ?.replace(".svx", "")
+        .toLowerCase();
       const metadata = file.metadata as Item;
       const item = { ...metadata, slug } as Item;
 
       this.dimensions.forEach((value, key) => {
-        if (metadata[key]) value.add(metadata[key]);
+        if (!metadata[key]) return;
+
+        if (Array.isArray(metadata[key])) {
+          metadata[key].map((value) => {
+            this.dimensions.get(key)?.add(value);
+          });
+        } else {
+          this.dimensions.get(key)?.add(metadata[key]);
+        }
       });
 
       entries.push(z.parse(this.schema, item) as Item);
@@ -116,19 +129,17 @@ class Collection<
     return out;
   }
 
-  getProperties(key: F) {
+  getDimensionValues(key: F) {
     return this.dimensions.get(key)?.values().toArray().flat() || [];
   }
 
   async getEntry(slug: string) {
-    if (!this.entries.find((item) => item.slug === slug)) {
-      throw Error(`Could not find ${slug}`);
-    }
+    console.warn(`Getting entry ${slug}`);
+    console.warn(this.entries.map((item) => item.slug));
+    console.warn(Collection.basePath, this.path);
 
     try {
-      const post = await import(
-        /* @vite-ignore */ `${Collection.basePath}/${this.path}/${slug}.svx`
-      );
+      const post = await import(`./${this.path}/${slug}.svx`);
 
       return {
         content: post.default,

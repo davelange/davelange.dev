@@ -4,7 +4,16 @@
   let { data }: { data: PageData } = $props();
 </script>
 
-<p>blog index</p>
+<h1>Some thoughts and guides on things</h1>
+
+<nav>
+  Tags
+  {#each data.tags as tag (tag)}
+    <a href={`/blog/categories/${tag}`}>{tag}</a><br />
+  {/each}
+</nav>
+
+<hr />
 
 {#each data.posts as post (post)}
   <a href={`/blog/${post.slug}`}>{post.title}</a><br />

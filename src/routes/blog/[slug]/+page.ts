@@ -1,10 +1,10 @@
-import { blogPosts } from "../../../content";
-import type { PageServerLoad } from "./$types";
+import { blogPosts } from "$content";
+import type { PageLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load: PageLoad = async ({ params }) => {
   const { slug } = params;
 
-  const contents = await blogPosts.getItem(slug);
+  const contents = await blogPosts.getEntry(slug);
 
   return {
     slug,
