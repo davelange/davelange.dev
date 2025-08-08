@@ -1,20 +1,31 @@
 <script lang="ts">
   import type { PageData } from "./$types";
+  import ListingLayout from "$lib/components/ListingLayout.svelte";
+  import CategoryNav from "$lib/components/CategoryNav.svelte";
+  import { page } from "$app/state";
+  import PostCardList from "$lib/components/PostCardList.svelte";
+  import ListingHeader from "$lib/components/ListingHeader.svelte";
 
   let { data }: { data: PageData } = $props();
 </script>
 
-<h1>Some thoughts and guides on things</h1>
+{#snippet header()}
+  <ListingHeader title="Some thoughts and guides on things" />
+{/snippet}
 
-<nav>
-  Tags
-  {#each data.tags as tag (tag)}
-    <a href={`/blog/categories/${tag}`}>{tag}</a><br />
-  {/each}
-</nav>
+{#snippet nav()}
+  <CategoryNav
+    categories={data.tags}
+    activeCategory={page.params.category}
+  />
+{/snippet}
 
-<hr />
+{#snippet postList()}
+  <PostCardList posts={data.posts} />
+{/snippet}
 
-{#each data.posts as post (post)}
-  <a href={`/blog/${post.slug}`}>{post.title}</a><br />
-{/each}
+<ListingLayout
+  headerSlot={header}
+  navSlot={nav}
+  mainSlot={postList}
+/>

@@ -10,6 +10,7 @@ export const load: PageServerLoad = async ({ params }) => {
 
   return {
     posts,
-    category: params.category
+    category: params.category,
+    tags: blogPosts.getDimensionValues("tags")
   };
 };

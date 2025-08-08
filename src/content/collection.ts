@@ -9,17 +9,18 @@ type CollectionOptions<
   dimensions: Array<F>;
 };
 
+type Item<T> = z.infer<T> & { slug: string };
 class Collection<
-  T extends z.ZodObject,
-  F extends keyof z.infer<T>,
-  Item extends z.infer<T> & { slug: string }
+  T extends z.ZodObject = z.ZodObject,
+  F extends keyof z.infer<T> = ""
+  //Item<T> extends z.infer<T> & { slug: string } = {slug: ''}
 > {
   static basePath = "/src/content";
 
   path = "";
   schema: z.ZodObject;
-  entries: Array<Item> = [];
-  dimensions = new Map<F, Set<Item[F]>>();
+  entries: Array<Item<T>> = [];
+  dimensions = new Map<F, Set<Item<T>[F]>>();
 
   constructor(options: CollectionOptions<T, F>) {
     this.schema = options.schema.extend({
@@ -29,7 +30,7 @@ class Collection<
 
     // Initialize properties
     options.dimensions.map((property) => {
-      this.dimensions.set(property, new Set<Item[F]>());
+      this.dimensions.set(property, new Set<Item<T>[F]>());
     });
 
     this.entries = this.compileEntries();
@@ -37,7 +38,7 @@ class Collection<
 
   compileEntries() {
     console.log("Compiling entries...");
-    const entries: Array<Item> = [];
+    const entries: Array<Item<T>> = [];
     const paths = import.meta.glob(`/src/content/**/*.svx`, {
       eager: true
     });
@@ -45,14 +46,14 @@ class Collection<
     for (const path in paths) {
       if (!path.includes(`/src/content/${this.path}`)) continue;
 
-      const file = paths[path] as { metadata: Item };
+      const file = paths[path] as { metadata: Item<T> };
       const slug = path
         .split("/")
         .at(-1)
         ?.replace(".svx", "")
         .toLowerCase();
-      const metadata = file.metadata as Item;
-      const item = { ...metadata, slug } as Item;
+      const metadata = file.metadata as Item<T>;
+      const item = { ...metadata, slug } as Item<T>;
 
       this.dimensions.forEach((value, key) => {
         if (!metadata[key]) return;
@@ -66,16 +67,18 @@ class Collection<
         }
       });
 
-      entries.push(z.parse(this.schema, item) as Item);
+      entries.push(z.parse(this.schema, item) as Item<T>);
     }
+
+    console.log(entries);
 
     return entries;
   }
 
   getEntries(options?: {
-    filter?: Partial<Record<F, Item[F]>>;
+    filter?: Partial<Record<F, Item<T>[F]>>;
     sort?: {
-      by: keyof Item;
+      by: keyof Item<T>;
       order: "asc" | "desc";
     };
     limit?: number;
@@ -91,9 +94,9 @@ class Collection<
         for (const filterKey in options.filter) {
           if (Array.isArray(item[filterKey as F])) {
             if (
-              (item[filterKey] as Array<Item[F]>).some((a) =>
+              (item[filterKey] as Array<Item<T>[F]>).some((a) =>
                 (
-                  options.filter![filterKey] as Array<Item[F]>
+                  options.filter![filterKey] as Array<Item<T>[F]>
                 ).includes(a)
               )
             ) {
@@ -135,7 +138,6 @@ class Collection<
 
   async getEntry(slug: string) {
     console.warn(`Getting entry ${slug}`);
-    console.warn(this.entries.map((item) => item.slug));
     console.warn(Collection.basePath, this.path);
 
     try {
@@ -143,12 +145,19 @@ class Collection<
 
       return {
         content: post.default,
-        meta: post.metadata as Item
+        meta: this.entries.find((item) => item.slug === slug)!
       };
     } catch (e: unknown) {
       throw Error(`Could not find ${slug}`, { cause: e });
     }
   }
 }
+
+export type CollectionEntry<C> = C extends { getEntries: unknown }
+  ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    C["getEntries"] extends (...args: any) => any
+    ? ReturnType<C["getEntries"]>[number]
+    : never
+  : never;
 
 export default Collection;
