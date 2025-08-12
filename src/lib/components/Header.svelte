@@ -9,7 +9,13 @@
   import Folio from "./Folio.svelte";
   import { themeManager } from "$lib/theme.svelte";
 
-  let { isLarge = false }: { isLarge?: boolean } = $props();
+  let {
+    isLarge = false,
+    hasFolio = false
+  }: {
+    isLarge?: boolean;
+    hasFolio?: boolean;
+  } = $props();
 
   let isMobileNavOpen = $state(false);
 </script>
@@ -41,19 +47,19 @@
   </button>
 {/snippet}
 
-<header class:discreet={!isLarge}>
+<header class:discreet={!isLarge} class:has-folio={hasFolio}>
   <h1 class="name">
     <a href="/"> Dave Lange </a>
   </h1>
 
-  <div class="folio">
-    {#if page.data.pageMeta?.isArticle}
+  {#if hasFolio}
+    <div class="folio">
       <Folio
         title={page.data.meta.title}
         slug={page.params.slug || ""}
       />
-    {/if}
-  </div>
+    </div>
+  {/if}
 
   <nav class="desktop-nav">
     <a href="/about">About</a>
@@ -112,11 +118,15 @@
     grid-template-columns: auto auto;
     align-items: baseline;
 
-    /* transition: background-color 0.2s ease; */
+    transition: background-color 0.2s ease;
 
     @media (min-width: 768px) {
       padding: var(--32px) var(--48px);
-      grid-template-columns: 37ch 70ch auto;
+      grid-template-columns: auto auto;
+
+      &.has-folio {
+        grid-template-columns: 37ch 70ch auto;
+      }
 
       &.discreet {
         padding-top: var(--20px);

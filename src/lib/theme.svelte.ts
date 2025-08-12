@@ -3,6 +3,7 @@ import { createPubSub } from "./pub";
 type Theme = "dark" | "light";
 
 const pub = createPubSub(["themeChange"]);
+const { on, cleanup } = pub.managedSubscriber();
 
 class ThemeManager {
   theme: Theme = "light";
@@ -31,7 +32,8 @@ class ThemeManager {
     pub.publish("themeChange", this.theme);
   }
 
-  on = pub.on;
+  on = on;
+  off = cleanup;
 }
 
 export const themeManager = new ThemeManager();

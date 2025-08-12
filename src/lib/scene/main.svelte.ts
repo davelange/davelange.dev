@@ -159,7 +159,7 @@ export class HomeScene {
       this.initUpdateLakes();
       this.updateColorSettings();
     });
-    themeManager.on("themeChange", (theme) => {
+    const id = themeManager.on("themeChange", (theme) => {
       console.log("themeChange in scene", theme);
       this.colorConfig = theme === "dark" ? colorsDark : colorsLight;
       this.updateColorSettings();
@@ -477,12 +477,13 @@ export class HomeScene {
   }
 
   destroy() {
-    console.log("destroy scene");
     this.clearTimeouts();
     this.renderer.dispose();
     this.composer.dispose();
     this.shaderPass.dispose();
     this.state.enabled = false;
+    this.gui.destroy();
+    themeManager.off();
   }
 }
 

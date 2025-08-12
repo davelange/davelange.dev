@@ -25,6 +25,7 @@ export function createPubSub<TEvent extends string>(
   };
 
   const off = (id: string) => {
+    console.log("cleanup", id);
     events.forEach((evt) => {
       subs[evt] = subs[evt].filter((sub) => sub.id !== id);
     });
@@ -48,7 +49,7 @@ export function createPubSub<TEvent extends string>(
   };
 
   const managedSubscriber = () => {
-    const id = window.crypto.randomUUID();
+    const id = crypto.randomUUID();
 
     return {
       on: _on(id),

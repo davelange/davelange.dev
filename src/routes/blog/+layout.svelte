@@ -1,10 +1,11 @@
 <script lang="ts">
   import Header from "$lib/components/Header.svelte";
+  import { page } from "$app/state";
 
   let { children } = $props();
 </script>
 
-<Header />
+<Header hasFolio={page.data.pageMeta?.isArticle} />
 <div class="main">
   {@render children?.()}
 </div>

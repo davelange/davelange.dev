@@ -17,8 +17,8 @@
 
 {@render children?.()}
 
-<style>
+<!-- <style>
   :global(body) {
     background: var(--bg-neutral-default);
   }
-</style>
+</style> -->

@@ -84,6 +84,9 @@ body {
   font-size: var(--16px);
   line-height: 1.4;
   -webkit-font-smoothing: antialiased;
+  background-color: var(--bg-neutral-default);
+
+  transition: background-color 0.2s ease;
 }
 
 a {

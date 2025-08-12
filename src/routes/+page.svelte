@@ -8,8 +8,8 @@
 </script>
 
 <div class="main">
-  <Header isLarge />
   <div class="landing-wrapper">
+    <Header isLarge />
     <div class="info-wrapper">
       <div class="info-frame main-info">
         <p class="greeting">
