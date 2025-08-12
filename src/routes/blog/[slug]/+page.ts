@@ -7,6 +7,9 @@ export const load: PageLoad = async ({ params }) => {
   const contents = await blogPosts.getEntry(slug);
 
   return {
+    pageMeta: {
+      isArticle: true
+    },
     slug,
     meta: contents.meta,
     contents

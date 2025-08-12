@@ -6,6 +6,9 @@ export const load: PageServerLoad = async () => {
   const tags = blogPosts.getDimensionValues("tags");
 
   return {
+    pageMeta: {
+      isArticle: false
+    },
     posts,
     tags
   };

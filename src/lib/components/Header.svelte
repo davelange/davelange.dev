@@ -3,9 +3,10 @@
   import XIcon from "~icons/feather/x";
   import MoonIcon from "~icons/feather/moon";
   import SunIcon from "~icons/feather/sun";
-
   import Icon from "./Icon.svelte";
   import { fade } from "svelte/transition";
+  import { page } from "$app/state";
+  import Folio from "./Folio.svelte";
 
   let { isLarge = false }: { isLarge?: boolean } = $props();
 
@@ -42,6 +43,15 @@
   <h1 class="name">
     <a href="/"> Dave Lange </a>
   </h1>
+
+  <div class="folio">
+    {#if page.data.pageMeta.isArticle}
+      <Folio
+        title={page.data.meta.title}
+        slug={page.params.slug || ""}
+      />
+    {/if}
+  </div>
 
   <nav class="desktop-nav">
     <a href="/about">About</a>
@@ -96,14 +106,15 @@
     max-width: var(--layout-max-width);
     margin: 0 auto;
 
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto auto;
     align-items: baseline;
 
     transition: background-color 0.2s ease;
 
     @media (min-width: 768px) {
       padding: var(--32px) var(--48px);
+      grid-template-columns: 37ch 70ch auto;
 
       &.discreet {
         padding-top: var(--20px);
@@ -125,6 +136,14 @@
     a {
       text-decoration: none;
       color: inherit;
+    }
+  }
+
+  .folio {
+    display: none;
+
+    @media (min-width: 768px) {
+      display: block;
     }
   }
 
@@ -151,6 +170,7 @@
     position: relative;
     z-index: 2;
 
+    margin-left: auto;
     align-self: center;
     display: flex;
     align-items: center;

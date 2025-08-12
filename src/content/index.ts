@@ -12,7 +12,17 @@ const blogPostSchema = z.object({
 
   tags: z.array(z.string()).optional().default([]),
   draft: z.boolean().optional().default(false),
-  featured: z.boolean().optional().default(false)
+  featured: z.boolean().optional().default(false),
+  headings: z
+    .array(
+      z.object({
+        level: z.number(),
+        title: z.string(),
+        slug: z.string()
+      })
+    )
+    .optional()
+    .default([])
 });
 
 export const blogPosts = new Collection({

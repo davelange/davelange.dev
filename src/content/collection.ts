@@ -70,8 +70,6 @@ class Collection<
       entries.push(z.parse(this.schema, item) as Item<T>);
     }
 
-    console.log(entries);
-
     return entries;
   }
 
@@ -136,9 +134,15 @@ class Collection<
     return this.dimensions.get(key)?.values().toArray().flat() || [];
   }
 
+  extractHeadings(content: string) {
+    const headings = content.match(/<h2>(.*?)<\/h2>/g);
+    return headings?.map((heading) =>
+      heading.replace(/<h2>|<\/h2>/g, "")
+    );
+  }
+
   async getEntry(slug: string) {
     console.warn(`Getting entry ${slug}`);
-    console.warn(Collection.basePath, this.path);
 
     try {
       const post = await import(`./${this.path}/${slug}.svx`);
