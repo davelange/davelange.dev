@@ -47,7 +47,7 @@
   </h1>
 
   <div class="folio">
-    {#if page.data.pageMeta.isArticle}
+    {#if page.data.pageMeta?.isArticle}
       <Folio
         title={page.data.meta.title}
         slug={page.params.slug || ""}

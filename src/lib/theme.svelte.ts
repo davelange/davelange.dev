@@ -30,6 +30,8 @@ class ThemeManager {
     window.localStorage.setItem("theme", this.theme);
     pub.publish("themeChange", this.theme);
   }
+
+  on = pub.on;
 }
 
 export const themeManager = new ThemeManager();

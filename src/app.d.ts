@@ -7,7 +7,7 @@ declare global {
     // interface Error {}
     // interface Locals {}
     interface PageData {
-      pageMeta: {
+      pageMeta?: {
         isArticle?: boolean;
       };
     }
