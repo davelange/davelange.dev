@@ -3,11 +3,10 @@
   import Icon from "./Icon.svelte";
   import { text } from "$lib/scene/config";
   import { onMount } from "svelte";
-  import { HomeScene } from "$lib/scene/main";
+  import { createScene } from "$lib/scene/main.svelte";
 
-  onMount(() => {
-    const scene = new HomeScene();
-    scene.render();
+  createScene({
+    onMount
   });
 </script>
 

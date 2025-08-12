@@ -34,6 +34,7 @@ export class HomeScene {
   subtitleElement: Element;
 
   state = {
+    enabled: true,
     phase: 0 as Phase,
     isFirstRun: true,
     isEditing: false
@@ -84,6 +85,7 @@ export class HomeScene {
   prevMouse = new THREE.Vector2(0, 0);
 
   constructor() {
+    console.log("init scene");
     this.canvas = document.querySelector(
       "canvas.webgl"
     ) as HTMLCanvasElement;
@@ -447,6 +449,8 @@ export class HomeScene {
   }
 
   render() {
+    if (!this.state.enabled) return;
+
     const elapsedTime = this.clock.getElapsedTime();
 
     this.rippleManager.update(this.settings.rippleIntensity);
@@ -471,4 +475,28 @@ export class HomeScene {
 
     window.requestAnimationFrame(this.render.bind(this));
   }
+
+  destroy() {
+    console.log("destroy scene");
+    this.clearTimeouts();
+    this.renderer.dispose();
+    this.composer.dispose();
+    this.shaderPass.dispose();
+    this.state.enabled = false;
+  }
+}
+
+export function createScene({
+  onMount
+}: {
+  onMount: (arg: () => void) => void;
+}) {
+  onMount(() => {
+    const scene = new HomeScene();
+    scene.render();
+
+    return () => {
+      scene.destroy();
+    };
+  });
 }
