@@ -9,6 +9,9 @@ export const load: PageServerLoad = async ({ params }) => {
   });
 
   return {
+    pageMeta: {
+      isArticle: false
+    },
     posts,
     category: params.category,
     tags: blogPosts.getDimensionValues("tags")

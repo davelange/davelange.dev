@@ -7,6 +7,7 @@
   import { fade } from "svelte/transition";
   import { page } from "$app/state";
   import Folio from "./Folio.svelte";
+  import { themeManager } from "$lib/theme.svelte";
 
   let { isLarge = false }: { isLarge?: boolean } = $props();
 
@@ -21,6 +22,7 @@
     data-theme="dark"
     aria-label="Toggle theme"
     title="Toggle theme"
+    onclick={() => themeManager.toggle()}
   >
     <div class="icon icon--dark">
       <Icon
@@ -110,7 +112,7 @@
     grid-template-columns: auto auto;
     align-items: baseline;
 
-    transition: background-color 0.2s ease;
+    /* transition: background-color 0.2s ease; */
 
     @media (min-width: 768px) {
       padding: var(--32px) var(--48px);

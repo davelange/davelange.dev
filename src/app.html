@@ -20,6 +20,21 @@
     />
 
     %sveltekit.head%
+
+    <script type="module">
+      (() => {
+        const theme = localStorage.getItem("theme");
+        const defaultToDark =
+          !theme &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+        if (theme === "dark" || defaultToDark) {
+          document.documentElement.classList.add("dark");
+        } else {
+          document.documentElement.classList.remove("dark");
+        }
+      })();
+    </script>
   </head>
   <body data-sveltekit-preload-data="hover">
     <div style="display: contents">%sveltekit.body%</div>

@@ -4,8 +4,11 @@
   import "$lib/styles/global.css";
   import "$lib/styles/prism.css";
   import Header from "$lib/components/Header.svelte";
+  import { themeManager } from "$lib/theme.svelte";
 
   let { children } = $props();
+
+  themeManager.init();
 </script>
 
 <svelte:head>
