@@ -16,9 +16,3 @@
 </svelte:head>
 
 {@render children?.()}
-
-<!-- <style>
-  :global(body) {
-    background: var(--bg-neutral-default);
-  }
-</style> -->

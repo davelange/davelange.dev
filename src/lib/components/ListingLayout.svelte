@@ -12,7 +12,7 @@
   } = $props();
 </script>
 
-<div class="wrapper">
+<div class="wrapper" class:no-header={!headerSlot}>
   <header class="header">
     {@render headerSlot?.()}
   </header>
@@ -36,6 +36,10 @@
       "nav"
       "main";
     grid-row-gap: var(--32px);
+
+    &.no-header {
+      grid-row-gap: 0;
+    }
 
     @media (min-width: 769px) {
       grid-template-areas:

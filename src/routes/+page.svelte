@@ -36,7 +36,7 @@
 
 <style>
   .landing-wrapper {
-    max-width: 1600px;
+    max-width: var(--layout-max-width);
     min-height: 100vh;
     margin: 0 auto;
     display: grid;
