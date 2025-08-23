@@ -3,13 +3,18 @@
   import type { CollectionEntry } from "$content/collection";
   import PostCard from "./PostCard.svelte";
 
-  let { posts }: { posts: Array<CollectionEntry<typeof blogPosts>> } =
-    $props();
+  let {
+    posts,
+    showTags
+  }: {
+    posts: Array<CollectionEntry<typeof blogPosts>>;
+    showTags?: boolean;
+  } = $props();
 </script>
 
 <section class="list">
   {#each posts as post (post.slug)}
-    <PostCard {...post} showTags />
+    <PostCard {...post} {showTags} />
   {/each}
 </section>
 
@@ -17,6 +22,7 @@
   .list {
     display: flex;
     flex-direction: column;
-    gap: var(--36px);
+    /* gap: var(--36px); */
+    gap: var(--24px);
   }
 </style>

@@ -25,8 +25,9 @@
 </script>
 
 <div class={["folio", { show }]}>
+  <a href="/blog">Blog /</a>
   <span>
-    <a href="/blog">Blog</a> / {title}
+    {title}
   </span>
 </div>
 
@@ -36,6 +37,11 @@
     opacity: 0;
     transition: opacity 0.2s ease;
     color: var(--bg-neutral-mild);
+    max-width: 240px;
+
+    a {
+      display: block;
+    }
 
     &.show {
       opacity: 0.7;

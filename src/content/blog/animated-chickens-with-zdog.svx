@@ -1,7 +1,7 @@
 ---
 title: Creating animated chickens with zdog
 publishedAt: April 2023
-description: Animated shapes are a great way of adding a bit of visual fun and flair to your projects. If you need something simple and easy to set up, zdog might be what you're looking for. It's round, flat, and fun to use. Find out how you can use it!
+description: If you need something simple and easy to set up, zdog might be what you're looking for. It's round, flat, and fun to use. Find out how you can use it!
 canonical: https://blog.finiam.com/blog/creating-animated-chickens-with-zdog
 tags:
   - visual

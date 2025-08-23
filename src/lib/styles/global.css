@@ -58,6 +58,12 @@
 
   /* Layouts */
   --layout-max-width: 1600px;
+  --layout-y-padding: 20px;
+  --layout-x-padding: 20px;
+
+  @media (min-width: 768px) {
+    --layout-x-padding: 32px;
+  }
 }
 
 .dark {
@@ -125,7 +131,7 @@ p {
   }
 
   h2 {
-    font-size: var(--28px);
+    font-size: var(--24px);
     font-weight: 700;
     margin: 1.5em 0 1em;
     color: var(--fg-brand-strong);

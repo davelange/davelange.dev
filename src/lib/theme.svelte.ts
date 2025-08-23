@@ -1,12 +1,12 @@
 import { createPubSub } from "./pub";
 
-type Theme = "dark" | "light";
+type Theme = "dark" | "light" | undefined;
 
 const pub = createPubSub(["themeChange"]);
 const { on, cleanup } = pub.managedSubscriber();
 
 class ThemeManager {
-  theme: Theme = "light";
+  theme: Theme = $state();
 
   init() {
     if (typeof window !== "undefined") {

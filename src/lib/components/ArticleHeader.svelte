@@ -20,13 +20,15 @@
     {title}
   </h1>
 
-  <div class="tags">
-    {#each tags as tag (tag)}
-      <Pill as="a" href={`/blog/tags/${tag}`}>
-        {tag}
-      </Pill>
-    {/each}
-  </div>
+  {#if tags.length > 0}
+    <div class="tags">
+      {#each tags as tag (tag)}
+        <Pill as="a" href={`/blog/tags/${tag}`}>
+          {tag}
+        </Pill>
+      {/each}
+    </div>
+  {/if}
 
   <time class="date" datetime={publishedAt.toISOString()}>
     Published {formattedDate}
@@ -48,7 +50,7 @@
     position: relative;
 
     @media (min-width: 769px) {
-      font-size: var(--36px);
+      font-size: var(--28px);
     }
   }
   .date {

@@ -30,6 +30,10 @@
 </nav>
 
 <style>
+  nav {
+    max-width: 240px;
+  }
+
   .title {
     font-size: var(--14px);
     color: var(--fg-neutral-mild);

@@ -6,7 +6,7 @@
 
 <style>
   .title {
-    font-size: var(--20px);
+    font-size: var(--24px);
     color: var(--fg-brand-strong);
     margin: 0;
   }

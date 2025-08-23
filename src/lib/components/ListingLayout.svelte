@@ -16,20 +16,17 @@
   <header class="header">
     {@render headerSlot?.()}
   </header>
-  <div class="nav">
-    {@render navSlot?.()}
-  </div>
   <section class="main">
     {@render mainSlot?.()}
   </section>
+  <div class="nav">
+    {@render navSlot?.()}
+  </div>
 </div>
 
 <style>
   .wrapper {
     display: grid;
-
-    padding: var(--20px);
-    margin: 0 auto;
 
     grid-template-areas:
       "header"
@@ -44,15 +41,15 @@
     @media (min-width: 769px) {
       grid-template-areas:
         "header header"
-        "nav main";
+        "main nav";
       grid-row-gap: var(--36px);
-      grid-template-columns: 37ch 70ch auto;
+      grid-template-columns: 70ch auto;
       grid-template-rows: auto 1fr;
 
       grid-column-gap: 0;
       grid-row-gap: var(--48px);
+      grid-column-gap: var(--48px);
 
-      padding: 0 var(--48px);
       margin: 0 auto;
     }
   }
@@ -60,7 +57,6 @@
   .header {
     @media (min-width: 769px) {
       grid-area: header;
-      grid-column: 2 / 2;
     }
   }
 

@@ -4,20 +4,19 @@
   import MoonIcon from "~icons/feather/moon";
   import SunIcon from "~icons/feather/sun";
   import Icon from "./Icon.svelte";
-  import { fade } from "svelte/transition";
-  import { page } from "$app/state";
-  import Folio from "./Folio.svelte";
+  import { fade, slide } from "svelte/transition";
   import { themeManager } from "$lib/theme.svelte";
-
+  import type { Snippet } from "svelte";
   let {
     isLarge = false,
-    hasFolio = false
+    titleSlot
   }: {
     isLarge?: boolean;
-    hasFolio?: boolean;
+    titleSlot?: Snippet;
   } = $props();
 
   let isMobileNavOpen = $state(false);
+  let duration = 240;
 </script>
 
 {#snippet themeToggle(size: number)}
@@ -30,108 +29,137 @@
     title="Toggle theme"
     onclick={() => themeManager.toggle()}
   >
-    <div class="icon icon--dark">
-      <Icon
-        size="var(--{size}px)"
-        icon={MoonIcon}
-        color="var(--fg-neutral-mild)"
-      />
-    </div>
-    <div class="icon icon--light">
-      <Icon
-        size="var(--{size}px)"
-        icon={SunIcon}
-        color="var(--fg-neutral-mild)"
-      />
-    </div>
+    {#if themeManager.theme === "dark"}
+      <div
+        in:slide={{
+          duration,
+          axis: "y",
+          delay: duration
+        }}
+        out:slide={{
+          duration,
+          axis: "y"
+        }}
+      >
+        <Icon
+          size="var(--{size}px)"
+          icon={MoonIcon}
+          color="var(--fg-neutral-mild)"
+        />
+      </div>
+    {:else if themeManager.theme === "light"}
+      <div
+        in:slide={{
+          duration,
+          axis: "y",
+          delay: duration
+        }}
+        out:slide={{
+          duration,
+          axis: "y"
+        }}
+      >
+        <Icon
+          size="var(--{size}px)"
+          icon={SunIcon}
+          color="var(--fg-neutral-mild)"
+        />
+      </div>
+    {/if}
   </button>
 {/snippet}
 
-<header class:discreet={!isLarge} class:has-folio={hasFolio}>
-  <h1 class="name">
-    <a href="/"> Dave Lange </a>
-  </h1>
-
-  {#if hasFolio}
-    <div class="folio">
-      <Folio
-        title={page.data.meta.title}
-        slug={page.params.slug || ""}
-      />
+<header class:discreet={!isLarge}>
+  <div class="header-content">
+    <h1 class="name">
+      <a href="/">Dave Lange</a>
+    </h1>
+    <div class="header-actions">
+      {@render themeToggle(16)}
+      <button
+        class="menu-btn"
+        onpointerdown={() => (isMobileNavOpen = !isMobileNavOpen)}
+      >
+        {#if isMobileNavOpen}
+          <Icon
+            size="var(--20px)"
+            icon={XIcon}
+            color="var(--fg-neutral-mild)"
+          />
+        {:else}
+          <Icon
+            size="var(--20px)"
+            icon={MenuIcon}
+            color="var(--fg-neutral-mild)"
+          />
+        {/if}
+      </button>
     </div>
-  {/if}
+  </div>
+
+  <div class="title-slot">
+    {@render titleSlot?.()}
+  </div>
 
   <nav class="desktop-nav">
-    <a href="/about">About</a>
     <a href="/blog">Blog</a>
-    {@render themeToggle(16)}
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
   </nav>
-
-  <div class="mobile-nav-actions">
-    {@render themeToggle(24)}
-
-    <button
-      class="menu-btn"
-      onpointerdown={() => (isMobileNavOpen = !isMobileNavOpen)}
-    >
-      {#if isMobileNavOpen}
-        <Icon
-          size="var(--24px)"
-          icon={XIcon}
-          color="var(--fg-neutral-mild)"
-        />
-      {:else}
-        <Icon
-          size="var(--24px)"
-          icon={MenuIcon}
-          color="var(--fg-neutral-mild)"
-        />
-      {/if}
-    </button>
-  </div>
 
   {#if isMobileNavOpen}
     <nav class="mobile-nav" transition:fade={{ duration: 80 }}>
       <a href="/about">About</a>
       <a href="/blog">Blog</a>
+      <a href="/contact">Contact</a>
     </nav>
   {/if}
 </header>
 
 <style>
   header {
+    display: flex;
     grid-area: header;
+    padding-bottom: var(--16px);
+    min-width: 240px;
+
+    height: calc(100vh - (var(--layout-y-padding) * 2));
     position: sticky;
-    top: 0;
-    bottom: 0;
-    z-index: 3;
-
-    background: var(--bg-neutral-default);
-
-    padding: var(--20px);
-    width: 100%;
-
-    max-width: var(--layout-max-width);
-    margin: 0 auto;
-
-    display: grid;
-    grid-template-columns: auto auto;
-    align-items: baseline;
-
-    transition: background-color 0.2s ease;
+    top: var(--layout-y-padding);
+    bottom: var(--layout-y-padding);
 
     @media (min-width: 768px) {
-      padding: var(--32px) var(--48px);
-      grid-template-columns: auto auto;
+      flex-direction: column;
+      gap: var(--48px);
+      max-height: 100vh;
+    }
+  }
 
-      &.has-folio {
-        grid-template-columns: 37ch 70ch auto;
-      }
+  .header-content {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
 
-      &.discreet {
-        padding-top: var(--20px);
-        padding-bottom: var(--20px);
-      }
+    @media (min-width: 768px) {
+      width: fit-content;
+      gap: var(--48px);
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--16px);
+  }
+
+  .title-slot {
+    display: none;
+
+    @media (min-width: 768px) {
+      display: block;
     }
   }
 
@@ -151,53 +179,35 @@
     }
   }
 
-  .folio {
-    display: none;
-
-    @media (min-width: 768px) {
-      display: block;
-    }
-  }
-
   .desktop-nav {
     display: none;
-    align-items: center;
-    gap: var(--20px);
-    margin-left: auto;
 
     @media (min-width: 768px) {
       display: flex;
+      flex-direction: column;
+      gap: var(--8px);
+      align-items: flex-start;
+      margin-top: auto;
     }
 
     a {
       text-decoration: none;
+      /* font-size: var(--18px); */
 
       &:focus-visible {
         outline-color: var(--fg-brand-strong);
       }
     }
   }
-
-  .mobile-nav-actions {
-    position: relative;
-    z-index: 2;
-
-    margin-left: auto;
-    align-self: center;
-    display: flex;
-    align-items: center;
-    gap: var(--16px);
-
-    @media (min-width: 768px) {
-      display: none;
-    }
-  }
-
   .menu-btn {
     display: block;
     border: 0;
     padding: 0;
     background: none;
+
+    @media (min-width: 768px) {
+      display: none;
+    }
   }
 
   .mobile-nav {
@@ -212,7 +222,6 @@
     width: 100%;
     padding: var(--72px) var(--20px) var(--20px);
 
-    background: var(--color-brand-300);
     border-radius: 0 0 var(--8px) var(--8px);
 
     a {
@@ -222,48 +231,19 @@
   }
 
   .theme-btn {
-    position: relative;
-    display: flex;
     border: 0;
     padding: 0;
     background: none;
     cursor: pointer;
 
-    width: 24px;
-    height: 24px;
-
-    @media (min-width: 768px) {
-      width: 16px;
-      height: 16px;
-    }
+    width: 20px;
+    height: 20px;
+    translate: 0 1px;
 
     &:focus-visible {
       outline: 2px solid var(--fg-brand-strong);
       outline-offset: 8px;
       border-radius: 50%;
     }
-  }
-
-  .icon {
-    display: block;
-    position: absolute;
-    color: var(--fg-neutral-mild);
-    inset: 0;
-    opacity: 1;
-    transition: all 0.4s 0.3s ease;
-
-    margin: auto;
-  }
-
-  :global(html.dark) .icon--light {
-    transition-delay: 0s;
-    translate: 0 16px;
-    opacity: 0;
-  }
-
-  :global(html:not(.dark)) .icon--dark {
-    transition-delay: 0s;
-    translate: 0 -16px;
-    opacity: 0;
   }
 </style>

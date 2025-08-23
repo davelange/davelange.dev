@@ -15,4 +15,14 @@
   <title>davelange.dev</title>
 </svelte:head>
 
-{@render children?.()}
+<div class="main">
+  {@render children?.()}
+</div>
+
+<style>
+  .main {
+    max-width: var(--layout-max-width);
+    margin: 0 auto;
+    padding: var(--layout-y-padding) var(--layout-x-padding);
+  }
+</style>

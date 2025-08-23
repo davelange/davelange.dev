@@ -5,9 +5,9 @@
   import { onMount } from "svelte";
   import { createScene } from "$lib/scene/main.svelte";
 
-  createScene({
+  /* createScene({
     onMount
-  });
+  }); */
 </script>
 
 <div class="wrapper">
@@ -50,7 +50,9 @@
     overflow: hidden;
     aspect-ratio: 1;
 
-    box-shadow: -4px 10px 16px #00000022;
+    box-shadow: -4px 10px 16px #d57d7d22;
+
+    background: #3652c4;
 
     @media (min-height: 1200px) {
       margin-top: 4vh;

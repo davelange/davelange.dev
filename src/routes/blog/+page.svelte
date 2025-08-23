@@ -5,27 +5,31 @@
   import { page } from "$app/state";
   import PostCardList from "$lib/components/PostCardList.svelte";
   import ListingHeader from "$lib/components/ListingHeader.svelte";
+  import MainLayout from "$lib/components/MainLayout.svelte";
+  import Header from "$lib/components/Header.svelte";
 
   let { data }: { data: PageData } = $props();
 </script>
 
-{#snippet header()}
-  <ListingHeader title="Some thoughts and guides on things" />
-{/snippet}
+<MainLayout>
+  {#snippet sidebarSlot()}
+    <Header>
+      {#snippet titleSlot()}
+        <CategoryNav
+          categories={data.tags}
+          activeCategory={page.params.category}
+        />
+      {/snippet}
+    </Header>
+  {/snippet}
 
-{#snippet nav()}
-  <CategoryNav
-    categories={data.tags}
-    activeCategory={page.params.category}
-  />
-{/snippet}
+  <ListingLayout>
+    {#snippet headerSlot()}
+      <ListingHeader title="Some thoughts and guides on things" />
+    {/snippet}
 
-{#snippet postList()}
-  <PostCardList posts={data.posts} />
-{/snippet}
-
-<ListingLayout
-  headerSlot={header}
-  navSlot={nav}
-  mainSlot={postList}
-/>
+    {#snippet mainSlot()}
+      <PostCardList posts={data.posts} />
+    {/snippet}
+  </ListingLayout>
+</MainLayout>

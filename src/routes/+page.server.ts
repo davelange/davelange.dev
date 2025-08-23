@@ -3,7 +3,7 @@ import { blogPosts } from "../content";
 
 export const load: PageServerLoad = async () => {
   const posts = blogPosts.getEntries({
-    limit: 3
+    limit: 2
   });
 
   return {
