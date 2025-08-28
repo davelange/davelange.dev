@@ -40,15 +40,14 @@
 
     @media (min-width: 769px) {
       grid-template-areas:
-        "header header"
+        "header nav"
         "main nav";
       grid-row-gap: var(--36px);
-      grid-template-columns: 70ch auto;
+      grid-template-columns: 60ch auto;
       grid-template-rows: auto 1fr;
 
-      grid-column-gap: 0;
       grid-row-gap: var(--48px);
-      grid-column-gap: var(--48px);
+      grid-column-gap: var(--64px);
 
       margin: 0 auto;
     }

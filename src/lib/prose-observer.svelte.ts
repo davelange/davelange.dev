@@ -82,21 +82,19 @@ export class ProseObserver {
 
 export const createProseObserver = ({
   key,
-  onMount,
-  onDestroy
+  onMount
 }: {
   key: string;
   onMount: (cb: () => void) => void;
-  onDestroy: (cb: () => void) => void;
 }) => {
   const proseObserver = proseObserverManager.createObserver(key);
 
   onMount(() => {
     proseObserver.setup();
-  });
 
-  onDestroy(() => {
-    proseObserverManager.destroyObserver(key);
+    return () => {
+      proseObserverManager.destroyObserver(key);
+    };
   });
 
   return proseObserver;

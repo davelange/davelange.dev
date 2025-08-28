@@ -1,84 +1,61 @@
 <script lang="ts">
   import MenuIcon from "~icons/feather/menu";
   import XIcon from "~icons/feather/x";
-  import MoonIcon from "~icons/feather/moon";
-  import SunIcon from "~icons/feather/sun";
   import Icon from "./Icon.svelte";
-  import { fade, slide } from "svelte/transition";
-  import { themeManager } from "$lib/theme.svelte";
+  import { fade } from "svelte/transition";
   import type { Snippet } from "svelte";
+  import { page } from "$app/state";
+  import ThemeToggle from "./ThemeToggle.svelte";
+  import HeaderNav from "./HeaderNav.svelte";
+
   let {
-    isLarge = false,
-    titleSlot
+    contentSlot,
+    isDiscreet = false
   }: {
-    isLarge?: boolean;
-    titleSlot?: Snippet;
+    contentSlot?: Snippet;
+    isDiscreet?: boolean;
   } = $props();
 
   let isMobileNavOpen = $state(false);
-  let duration = 240;
+
+  let pages = [
+    {
+      label: "Blog",
+      href: "/blog"
+    },
+
+    {
+      label: "About",
+      href: "/about"
+    },
+
+    {
+      label: "Contact",
+      href: "/contact"
+    }
+  ];
+
+  function handleMousedown(e: MouseEvent) {
+    if (isMobileNavOpen) {
+      e.preventDefault();
+      isMobileNavOpen = false;
+    }
+  }
 </script>
 
-{#snippet themeToggle(size: number)}
-  <button
-    type="button"
-    data-js="theme-toggle"
-    class="theme-btn"
-    data-theme="dark"
-    aria-label="Toggle theme"
-    title="Toggle theme"
-    onclick={() => themeManager.toggle()}
-  >
-    {#if themeManager.theme === "dark"}
-      <div
-        in:slide={{
-          duration,
-          axis: "y",
-          delay: duration
-        }}
-        out:slide={{
-          duration,
-          axis: "y"
-        }}
-      >
-        <Icon
-          size="var(--{size}px)"
-          icon={MoonIcon}
-          color="var(--fg-neutral-mild)"
-        />
-      </div>
-    {:else if themeManager.theme === "light"}
-      <div
-        in:slide={{
-          duration,
-          axis: "y",
-          delay: duration
-        }}
-        out:slide={{
-          duration,
-          axis: "y"
-        }}
-      >
-        <Icon
-          size="var(--{size}px)"
-          icon={SunIcon}
-          color="var(--fg-neutral-mild)"
-        />
-      </div>
-    {/if}
-  </button>
-{/snippet}
-
-<header class:discreet={!isLarge}>
-  <div class="header-content">
+<div class="wrapper" class:is-discreet={isDiscreet}>
+  <header class="header-content">
     <h1 class="name">
       <a href="/">Dave Lange</a>
     </h1>
     <div class="header-actions">
-      {@render themeToggle(16)}
+      <ThemeToggle size={16} />
       <button
         class="menu-btn"
-        onpointerdown={() => (isMobileNavOpen = !isMobileNavOpen)}
+        onpointerdown={(e) => {
+          e.preventDefault();
+          isMobileNavOpen = !isMobileNavOpen;
+        }}
       >
         {#if isMobileNavOpen}
           <Icon
@@ -95,43 +72,64 @@
         {/if}
       </button>
     </div>
-  </div>
+  </header>
 
-  <div class="title-slot">
-    {@render titleSlot?.()}
-  </div>
+  {@render contentSlot?.()}
 
-  <nav class="desktop-nav">
-    <a href="/blog">Blog</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
-  </nav>
+  {#if !isDiscreet}
+    <HeaderNav />
+  {/if}
 
   {#if isMobileNavOpen}
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
+      class="mobile-nav-backdrop"
+      onmousedown={handleMousedown}
+      transition:fade={{ duration: 80 }}
+    ></div>
     <nav class="mobile-nav" transition:fade={{ duration: 80 }}>
-      <a href="/about">About</a>
-      <a href="/blog">Blog</a>
-      <a href="/contact">Contact</a>
+      {#each pages as link (link.href)}
+        <a
+          href={link.href}
+          class:active={link.href === page.url.pathname}
+        >
+          {link.label}
+        </a>
+      {/each}
     </nav>
   {/if}
-</header>
+</div>
 
 <style>
-  header {
+  .wrapper {
     display: flex;
+    flex-wrap: wrap;
     grid-area: header;
+    padding-top: var(--16px);
     padding-bottom: var(--16px);
-    min-width: 240px;
+    gap: var(--36px);
+    z-index: 2;
 
-    height: calc(100vh - (var(--layout-y-padding) * 2));
     position: sticky;
-    top: var(--layout-y-padding);
+    top: 0;
     bottom: var(--layout-y-padding);
 
+    background-color: var(--bg-neutral-default);
+    transition: background-color 0.2s ease;
+
+    &.is-discreet {
+      position: static;
+      height: auto;
+    }
+
     @media (min-width: 768px) {
+      padding: 0;
+      top: var(--layout-y-padding);
+      min-width: 240px;
+      height: calc(100vh - (var(--layout-y-padding) * 2));
       flex-direction: column;
       gap: var(--48px);
-      max-height: 100vh;
+      max-height: min(100vh, 840px);
     }
   }
 
@@ -141,7 +139,7 @@
     align-items: center;
     justify-content: space-between;
     position: relative;
-    z-index: 2;
+    z-index: 3;
 
     @media (min-width: 768px) {
       width: fit-content;
@@ -154,15 +152,6 @@
     align-items: center;
     gap: var(--16px);
   }
-
-  .title-slot {
-    display: none;
-
-    @media (min-width: 768px) {
-      display: block;
-    }
-  }
-
   .name {
     position: relative;
     z-index: 2;
@@ -179,26 +168,6 @@
     }
   }
 
-  .desktop-nav {
-    display: none;
-
-    @media (min-width: 768px) {
-      display: flex;
-      flex-direction: column;
-      gap: var(--8px);
-      align-items: flex-start;
-      margin-top: auto;
-    }
-
-    a {
-      text-decoration: none;
-      /* font-size: var(--18px); */
-
-      &:focus-visible {
-        outline-color: var(--fg-brand-strong);
-      }
-    }
-  }
   .menu-btn {
     display: block;
     border: 0;
@@ -213,37 +182,38 @@
   .mobile-nav {
     position: absolute;
     top: 0;
-    left: 0;
+    left: calc(var(--layout-x-padding) * -1);
+    bottom: 0;
+    z-index: 2;
 
     display: flex;
     flex-direction: column;
     gap: var(--16px);
 
-    width: 100%;
+    width: 100vw;
+    height: fit-content;
     padding: var(--72px) var(--20px) var(--20px);
+    background: var(--bg-neutral-default);
 
     border-radius: 0 0 var(--8px) var(--8px);
 
     a {
       text-decoration: none;
       font-size: var(--20px);
+
+      &.active {
+        color: var(--fg-brand-strong);
+      }
     }
   }
 
-  .theme-btn {
-    border: 0;
-    padding: 0;
-    background: none;
-    cursor: pointer;
-
-    width: 20px;
-    height: 20px;
-    translate: 0 1px;
-
-    &:focus-visible {
-      outline: 2px solid var(--fg-brand-strong);
-      outline-offset: 8px;
-      border-radius: 50%;
-    }
+  .mobile-nav-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 1;
   }
 </style>

@@ -54,10 +54,6 @@
 
     background: #3652c4;
 
-    @media (min-height: 1200px) {
-      margin-top: 4vh;
-    }
-
     .edit-button {
       opacity: 0;
       position: absolute;

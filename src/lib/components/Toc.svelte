@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { CollectionEntry } from "$content/collection";
   import { blogPosts } from "$content";
-  import { proseObserverManager } from "$lib/prose-observer.svelte";
+  import { createProseObserver } from "$lib/prose-observer.svelte";
   import { onMount } from "svelte";
 
   let {
@@ -12,10 +12,13 @@
     slug: string;
   } = $props();
 
+  const proseObserver = createProseObserver({
+    key: slug,
+    onMount
+  });
+
   let activeSection = $state("");
   let timeout = $state<ReturnType<typeof setTimeout>>();
-
-  const proseObserver = proseObserverManager.getObserver(slug);
 
   proseObserver?.on("enteredSection", (sectionId) => {
     clearTimeout(timeout);
@@ -58,7 +61,6 @@
 </script>
 
 <div class="nav">
-  <p class="title">Table of Contents</p>
   <ul>
     {#each headings as heading (heading.title)}
       <li
@@ -75,16 +77,7 @@
 
 <style>
   .nav {
-    grid-area: nav;
     max-width: 200px;
-    position: sticky;
-    top: 180px;
-
-    .title {
-      font-size: var(--14px);
-      color: var(--fg-neutral-mild);
-      margin: 0 0 var(--16px);
-    }
   }
 
   ul {
@@ -97,6 +90,7 @@
     padding: 0;
 
     li {
+      font-size: var(--14px);
       &.active {
         color: var(--fg-brand-mild);
       }

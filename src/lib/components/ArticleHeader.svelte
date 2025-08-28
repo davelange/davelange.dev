@@ -23,7 +23,7 @@
   {#if tags.length > 0}
     <div class="tags">
       {#each tags as tag (tag)}
-        <Pill as="a" href={`/blog/tags/${tag}`}>
+        <Pill as="a" href={`/blog/categories/${tag}`}>
           {tag}
         </Pill>
       {/each}
@@ -50,7 +50,7 @@
     position: relative;
 
     @media (min-width: 769px) {
-      font-size: var(--28px);
+      font-size: var(--36px);
     }
   }
   .date {

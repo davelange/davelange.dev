@@ -18,10 +18,16 @@
 <style>
   .wrapper {
     display: flex;
-    gap: var(--48px);
-    /* flex: 1 0 auto; */
+    gap: var(--24px);
+    flex-direction: column;
+
+    @media (min-width: 768px) {
+      flex-direction: row;
+      gap: var(--128px);
+    }
   }
 
   .main {
+    flex: 1 0 auto;
   }
 </style>

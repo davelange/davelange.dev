@@ -1,14 +1,13 @@
 <script lang="ts">
   import { createProseObserver } from "$lib/prose-observer.svelte";
-  import { onMount, onDestroy } from "svelte";
+  import { onMount } from "svelte";
   let { title, slug }: { title: string; slug: string } = $props();
 
   let show = $state(false);
 
   const proseObserver = createProseObserver({
     key: slug,
-    onMount,
-    onDestroy
+    onMount
   });
 
   proseObserver?.on("scrolledDownFromSection", (sectionId) => {

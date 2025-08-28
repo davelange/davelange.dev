@@ -14,11 +14,13 @@
 <MainLayout>
   {#snippet sidebarSlot()}
     <Header>
-      {#snippet titleSlot()}
-        <CategoryNav
-          categories={data.tags}
-          activeCategory={page.params.category}
-        />
+      {#snippet contentSlot()}
+        <div class="mobile-hide">
+          <CategoryNav
+            categories={data.tags}
+            activeCategory={page.params.category}
+          />
+        </div>
       {/snippet}
     </Header>
   {/snippet}
