@@ -14,18 +14,23 @@
 <MainLayout>
   {#snippet sidebarSlot()}
     <Header>
-      {#snippet titleSlot()}
-        <CategoryNav
-          categories={data.tags}
-          activeCategory={page.params.category}
-        />
+      {#snippet contentSlot()}
+        <div class="mobile-hide">
+          <CategoryNav
+            categories={data.tags}
+            activeCategory={page.params.category}
+          />
+        </div>
       {/snippet}
     </Header>
   {/snippet}
 
   <ListingLayout>
     {#snippet headerSlot()}
-      <ListingHeader title="Some thoughts and guides on things" />
+      <ListingHeader
+        title="Some thoughts and guides on things - {page.params
+          .category}"
+      />
     {/snippet}
 
     {#snippet mainSlot()}

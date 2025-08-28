@@ -5,9 +5,9 @@
   import { onMount } from "svelte";
   import { createScene } from "$lib/scene/main.svelte";
 
-  /* createScene({
+  createScene({
     onMount
-  }); */
+  });
 </script>
 
 <div class="wrapper">

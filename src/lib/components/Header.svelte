@@ -139,7 +139,7 @@
     align-items: center;
     justify-content: space-between;
     position: relative;
-    z-index: 3;
+    z-index: 2;
 
     @media (min-width: 768px) {
       width: fit-content;

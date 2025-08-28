@@ -4,7 +4,7 @@
   --color-neutral-600: #373739;
   --color-neutral-500: #50504d;
   --color-neutral-200: #e2e1e1;
-  --color-neutral-100: #fdfdfd;
+  --color-neutral-100: #fcfcfc;
 
   --color-brand-500: #4964fd;
   --color-brand-400: #6679e9;
@@ -130,6 +130,7 @@ p {
     font-size: var(--18px);
   }
 
+  h1,
   h2 {
     font-size: var(--24px);
     font-weight: 700;
