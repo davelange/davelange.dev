@@ -17,7 +17,7 @@
   } = $props();
 
   let isMobileNavOpen = $state(false);
-
+  let mobileNav: HTMLDialogElement;
   let pages = [
     {
       label: "Blog",
@@ -27,20 +27,8 @@
     {
       label: "About",
       href: "/about"
-    },
-
-    {
-      label: "Contact",
-      href: "/contact"
     }
   ];
-
-  function handleMousedown(e: MouseEvent) {
-    if (isMobileNavOpen) {
-      e.preventDefault();
-      isMobileNavOpen = false;
-    }
-  }
 </script>
 
 <div class="wrapper" class:is-discreet={isDiscreet}>
@@ -52,8 +40,13 @@
       <ThemeToggle size={16} />
       <button
         class="menu-btn"
-        onpointerdown={(e) => {
-          e.preventDefault();
+        onclick={() => {
+          if (isMobileNavOpen) {
+            mobileNav.close();
+          } else {
+            mobileNav.showModal();
+          }
+
           isMobileNavOpen = !isMobileNavOpen;
         }}
       >
@@ -80,14 +73,8 @@
     <HeaderNav />
   {/if}
 
-  {#if isMobileNavOpen}
-    <!-- svelte-ignore a11y_no_static_element_interactions -->
-    <div
-      class="mobile-nav-backdrop"
-      onmousedown={handleMousedown}
-      transition:fade={{ duration: 80 }}
-    ></div>
-    <nav class="mobile-nav" transition:fade={{ duration: 80 }}>
+  <dialog class="mobile-nav" closedby="any" bind:this={mobileNav}>
+    <nav transition:fade={{ duration: 80 }}>
       {#each pages as link (link.href)}
         <a
           href={link.href}
@@ -97,7 +84,7 @@
         </a>
       {/each}
     </nav>
-  {/if}
+  </dialog>
 </div>
 
 <style>
@@ -173,6 +160,7 @@
     border: 0;
     padding: 0;
     background: none;
+    cursor: pointer;
 
     @media (min-width: 768px) {
       display: none;
@@ -180,22 +168,22 @@
   }
 
   .mobile-nav {
-    position: absolute;
-    top: 0;
-    left: calc(var(--layout-x-padding) * -1);
-    bottom: 0;
-    z-index: 2;
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--16px);
-
+    max-width: 100vw;
     width: 100vw;
-    height: fit-content;
-    padding: var(--72px) var(--20px) var(--20px);
-    background: var(--bg-neutral-default);
+    margin-top: 65px;
 
+    color: var(--fg-neutral-default);
+    background: var(--bg-neutral-default);
+    border: 0;
     border-radius: 0 0 var(--8px) var(--8px);
+
+    nav {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--16px);
+      padding: var(--20px);
+    }
 
     a {
       text-decoration: none;
@@ -205,6 +193,35 @@
         color: var(--fg-brand-strong);
       }
     }
+    /* position: fixed;
+    top: 0;
+    left: 0;
+    right: 0; */
+    /* width: 100vw;
+
+    border: 0;
+
+    nav {
+      position: relative;
+      z-index: 5;
+
+      display: flex;
+      flex-direction: column;
+      gap: var(--16px);
+
+      width: 100vw;
+      height: fit-content;
+      padding: var(--72px) var(--20px) var(--20px);
+    }
+
+    a {
+      text-decoration: none;
+      font-size: var(--20px);
+
+      &.active {
+        color: var(--fg-brand-strong);
+      }
+    } */
   }
 
   .mobile-nav-backdrop {

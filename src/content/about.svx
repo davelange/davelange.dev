@@ -1,8 +1,0 @@
-##  Hello!
-
-I'm a software developer. I'm passionate about turning ideas into meaningful tools and experiences. I focus on full-stack web products, and am always looking for ways to grow and refine my skills.
-
-With a background in graphic design, I often work at the intersection of users' experience and the software that delivers it - balancing needs, expectations, and all the technical constraints and possibilities. It's often a messy place to work in, but I enjoy the challenge and immense potential it has.
-
-Currently I'm working remotely at Subvisual. I live in Coimbra with my wife and our dog, Norbie. When I'm not working, you might find me hiking in the mountains, where we enjoy getting lost in nature. That or enjoying some wine.
-
