@@ -39,14 +39,38 @@
       </p>
 
       <p>
+        I've gained a lot of experience working in varied projects,
+        both small and large, mostly with:
+      </p>
+
+      <ul>
+        <li>
+          Frontend development: Experienced with vanilla
+          (HTML/CSS/JS), Typescript, React, Svelte, among others. I
+          also work with Three.js and shaders. Also a keen eye for
+          visual detail.
+        </li>
+        <li>
+          Full stack projects: Mostly Node.js in serverless
+          environments, as well as more traditional monolithic
+          projects. I've also worked with Phoenix (Elixir). In another
+          life I also worked with Wordpress/PHP.
+        </li>
+        <li>
+          Web3: experience in building dApps (Ethereum and Starknet).
+        </li>
+      </ul>
+
+      <p>
         Currently I'm working remotely at <a
           href="https://subvisual.com"
           target="_blank">Subvisual</a
         >, building all sorts of products. I also give some occasional
         talks at developer meetups, and help organise
-        <a href="https://luma.com/k7hu86ln" target="_blank"
-          >Coimbra.js</a
-        >. I enjoy mentoring and helping other developers grow.
+        <a href="https://luma.com/k7hu86ln" target="_blank">
+          Coimbra.js
+        </a>, a community driven meetup. I enjoy mentoring and helping
+        other developers grow.
       </p>
 
       <p>
@@ -70,7 +94,7 @@
     }
 
     @media (min-width: 768px) {
-      margin-top: var(--64px);
+      margin-top: var(--36px);
     }
   }
 
@@ -90,6 +114,15 @@
     }
   }
 
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   .norbie {
     position: relative;
     text-decoration: underline;
@@ -102,13 +135,15 @@
       bottom: var(--24px);
       translate: -50% 0;
       max-width: 140px;
-      opacity: 0;
       transition: opacity 0.2s ease-in-out;
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
     }
 
     &:hover {
       img {
-        opacity: 1;
+        display: block;
+        animation: fadeIn 0.2s ease-in-out;
       }
     }
   }

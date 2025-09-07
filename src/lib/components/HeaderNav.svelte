@@ -1,20 +1,15 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import Contacts from "./Contacts.svelte";
 
   let pages = [
     {
       label: "Blog",
       href: "/blog"
     },
-
     {
       label: "About",
       href: "/about"
-    },
-
-    {
-      label: "Contact",
-      href: "/contact"
     }
   ];
 </script>
@@ -28,6 +23,7 @@
       {link.label}
     </a>
   {/each}
+  <Contacts />
 </nav>
 
 <style>

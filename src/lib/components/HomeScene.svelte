@@ -11,6 +11,7 @@
 </script>
 
 <div class="wrapper">
+  <div class="scene-overlay"></div>
   <canvas class="webgl"> </canvas>
   <div class="scene-content">
     <div class="greeting-wrapper">
@@ -52,8 +53,6 @@
 
     box-shadow: -4px 10px 16px #d57d7d22;
 
-    background: #3652c4;
-
     .edit-button {
       opacity: 0;
       position: absolute;
@@ -76,6 +75,25 @@
         opacity: 1;
       }
     }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  .scene-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-neutral-default);
+    z-index: 3;
+    animation: fadeOut 0.2s 0.3s ease-in-out forwards;
   }
 
   :global(html.dark) .wrapper {
