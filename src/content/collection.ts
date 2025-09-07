@@ -145,10 +145,12 @@ class Collection<
     console.warn(`Getting entry ${slug}`);
 
     try {
-      const post = await import(`./${this.path}/${slug}.svx`);
+      const modules = import.meta.glob("./**/*.svx");
+      console.log({ slug: `./${this.path}/${slug}.svx`, modules });
+      const post = await modules[`./blog/${slug}.svx`]();
 
       return {
-        content: post.default,
+        content: (post as { default: unknown }).default,
         meta: this.entries.find((item) => item.slug === slug)!
       };
     } catch (e: unknown) {

@@ -52,6 +52,7 @@
     grid-area: content;
     display: flex;
     flex-direction: column;
+    padding-bottom: var(--48px);
 
     .greeting {
       font-size: var(--24px);
@@ -62,6 +63,7 @@
 
       @media (min-width: 768px) {
         margin: var(--48px) 0 var(--36px);
+        padding-bottom: 0;
       }
     }
   }
