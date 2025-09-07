@@ -11,6 +11,10 @@
   let { data }: { data: PageData } = $props();
 </script>
 
+<svelte:head>
+  <title>{page.params.category} Blog | Dave Lange</title>
+</svelte:head>
+
 <MainLayout>
   {#snippet sidebarSlot()}
     <Header>

@@ -9,6 +9,10 @@
   let { data }: { data: PageData } = $props();
 </script>
 
+<svelte:head>
+  <title>{data.meta.title} | Dave Lange</title>
+</svelte:head>
+
 <MainLayout>
   {#snippet sidebarSlot()}
     <Header>

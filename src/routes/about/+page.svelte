@@ -6,6 +6,9 @@
   import norbie from "$lib/assets/norbie.webp";
 </script>
 
+<svelte:head>
+  <title>About | Dave Lange</title>
+</svelte:head>
 <MainLayout>
   {#snippet sidebarSlot()}
     <Header />

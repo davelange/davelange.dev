@@ -1,5 +1,5 @@
 <script lang="ts">
-  import favicon from "$lib/assets/favicon.svg";
+  import favicon from "$lib/assets/favicon.png";
   import "$lib/styles/reset.css";
   import "$lib/styles/global.css";
   import "$lib/styles/prism.css";
@@ -12,7 +12,7 @@
 
 <svelte:head>
   <link rel="icon" href={favicon} />
-  <title>davelange.dev</title>
+  <title>Dave Lange</title>
 </svelte:head>
 
 <div class="main">
