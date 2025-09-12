@@ -107,7 +107,7 @@
   }
 
   .scene-content {
-    position: relative;
+    /* position: relative; */
     margin: auto;
     width: fit-content;
     max-width: 460px;
