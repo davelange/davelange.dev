@@ -13,7 +13,6 @@ type Item<T> = z.infer<T> & { slug: string };
 class Collection<
   T extends z.ZodObject = z.ZodObject,
   F extends keyof z.infer<T> = ""
-  //Item<T> extends z.infer<T> & { slug: string } = {slug: ''}
 > {
   static basePath = "/src/content";
 
@@ -146,8 +145,7 @@ class Collection<
 
     try {
       const modules = import.meta.glob("./**/*.svx");
-      console.log({ slug: `./${this.path}/${slug}.svx`, modules });
-      const post = await modules[`./blog/${slug}.svx`]();
+      const post = await modules[`./${this.path}/${slug}.svx`]();
 
       return {
         content: (post as { default: unknown }).default,
