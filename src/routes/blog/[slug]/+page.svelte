@@ -11,6 +11,7 @@
 
 <svelte:head>
   <title>{data.meta.title} | Dave Lange</title>
+  <meta name="description" content={data.meta.description} />
 </svelte:head>
 
 <MainLayout>

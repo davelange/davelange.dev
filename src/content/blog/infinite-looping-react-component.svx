@@ -6,7 +6,6 @@ canonical: https://blog.finiam.com/blog/infinite-looping-react-component
 tags:
   - react
   - frontend
-
 ---
 
 _This was originally written for [Finiam](https://blog.finiam.com/blog/infinite-looping-react-component)_

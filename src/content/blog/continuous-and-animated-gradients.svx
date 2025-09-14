@@ -11,7 +11,7 @@ canonical: 'https://subvisual.com/blog/posts/continuous-animated-gradients/'
 
 Recently I came upon a pretty interesting request: a landing page with a bunch of elements - which could be text, backgrounds, SVGs - that share a gradient background. The gradient should also be animated accross all the elements in sync.
 
-<iframe src="https://codesandbox.io/embed/gradience-8rkzqr?fontsize=14&hidenavigation=1&theme=dark&view=preview" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" title="gradience" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts" />
+<iframe src="https://codesandbox.io/embed/gradience-8rkzqr?fontsize=14&hidenavigation=1&theme=dark&view=preview" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" title="gradience" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 
 Basically, I needed a single pagewide continuous animated gradient shared by a bunch of elements.
 

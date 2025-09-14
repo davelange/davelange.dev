@@ -3,9 +3,13 @@ title: Building dapps with Starknet React
 publishedAt: February 2023
 description: Need some content to repeat across the screen and endlessly loop round and round? In this blog post, I take a look at how to create an infinite looper with React JS and CSS animations.
 canonical: https://blog.finiam.com/blog/building-dapps-with-starknet-react
+tags:
+  - javascript
+  - frontend
+  - web3
 ---
 
-_Parts of this article were originally written for [The Starknet Book](https://book.starknet.io/). Check it out for more content on Starknet development. Originally posted at [Finiam](https://blog.finiam.com/blog/building-dapps-with-starknet-react)._
+_Parts of this article were originally written for [The Starknet Book](https://book.starknet.io/) in 2023, and may be outdated. Check it out for more content on Starknet development. Originally posted at [Finiam](https://blog.finiam.com/blog/building-dapps-with-starknet-react)._
 
 ## The good news
 

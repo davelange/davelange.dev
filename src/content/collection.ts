@@ -148,7 +148,7 @@ class Collection<
       const post = await modules[`./${this.path}/${slug}.svx`]();
 
       return {
-        content: (post as { default: unknown }).default,
+        content: (post as { default: any }).default,
         meta: this.entries.find((item) => item.slug === slug)!
       };
     } catch (e: unknown) {

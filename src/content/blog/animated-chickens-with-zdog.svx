@@ -5,9 +5,7 @@ description: If you need something simple and easy to set up, zdog might be what
 canonical: https://blog.finiam.com/blog/creating-animated-chickens-with-zdog
 tags:
   - visual
-  - javascript
   - frontend
-  - animation
 ---
 
 _This was originally written for [Finiam](https://blog.finiam.com/blog/creating-animated-chickens-with-zdog)_

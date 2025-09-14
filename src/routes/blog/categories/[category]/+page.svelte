@@ -12,7 +12,12 @@
 </script>
 
 <svelte:head>
-  <title>{page.params.category} Blog | Dave Lange</title>
+  <title>{page.params.category} | Dave Lange</title>
+  <meta
+    name="description"
+    content="{page.params
+      .category} - Some thoughts and guides on things"
+  />
 </svelte:head>
 
 <MainLayout>

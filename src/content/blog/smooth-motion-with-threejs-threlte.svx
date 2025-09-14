@@ -7,8 +7,8 @@ publishedAt: 2024-05-01T23:00:00.000Z
 canonical: "https://subvisual.com/blog"
 tags:
   - 3D
-  - javascript
-  - animation
+  - visual
+  - frontend
 coverImage: /public/media/cubes.png
 ---
 
@@ -38,7 +38,7 @@ I won't go into much detail here on how to use Threlte, and hopefuly it should b
 
 Let's start with the simpler parts of the project - in this scene the camera and ligths are nothing special.
 
-```javascript
+```js
 // Scene.svelte
 <World gravity={[0, 0, 0]}>
   <T.PerspectiveCamera
@@ -59,7 +59,7 @@ Let's start with the simpler parts of the project - in this scene the camera and
 
 Next we can add a single cube to this scene:
 
-```javascript
+```js
 // Cube.svelte
 
 <T.Mesh>
@@ -78,7 +78,7 @@ Next we can add a single cube to this scene:
 
 It should show up in the center of the scene. So how to make it "drift"? First we need to make the physics engine aware that this object even exists. We can do this by attaching it to a `RigidBody`.
 
-```javascript
+```js
 <RigidBody
   type="dynamic"
   angularVelocity={[0, 0, 0]}
@@ -111,7 +111,7 @@ Basically, we need to box our cubes in with some boundaries. We can do this simp
 
 Each limit in our box can be achived using a [PlaneGeometry](https://threejs.org/docs/index.html?q=plane#api/en/geometries/PlaneGeometry). The following code would get you the front and back limits, and the remaining ones need only the appropriate position and rotation values:
 
-```javascript
+```js
 <RigidBody type="fixed" userData={{name: "end"}}> // <- the planes won't move anywhere, so the RigidBody can be fixed
   <AutoColliders shape="cuboid">
     <T.Mesh position={[0, 0, EDGE_Z]} rotation={[0, degToRad(180), 0]}>
@@ -143,7 +143,7 @@ Great! We've prevented our cubes from drifting out of the scene, but you may hav
 
 One way to do this is through the `collisionenter` event. This event fires whenever there is a collision with another RigidBody, and tells us who that RigidBody was. This allows us to do something like this:
 
-```javascript
+```js
 // Cube.svelte
 function handleCollision(event) {
     const limitName = event.targetRigidBody.userData.name; // <- identifies limit: start, end, left, right, etc
@@ -182,7 +182,7 @@ The next step is to make our cubes move in a specific way whenever we click a bu
 
 Basically what happens is the following:
 
-```javascript
+```js
 // page.svelte
 <button type="button" on:click={toggle}>
   Click here
@@ -202,7 +202,7 @@ So how do we control the Cube's movement? There are a couple ways to move things
 
 The problem now, however, is that `setTranslation` will simply teleport the object from point A to point B, with no actual animation in between. One way around this is to translate the object 1 little bit per frame, so that after _n_ frames, it reaches its destination smoothly. A very simple implementation might look like this:
 
-```javascript
+```js
 // Cube.svelte
 let rigidBody: RapierRigidBody;
 let animation;
@@ -271,7 +271,7 @@ At this point there's still a lot of room for improvement - we need to add easin
 
 Here I ended up creating a custom store for dealing with these animations easily, allowing me to call it like this:
 
-```javascript
+```js
 // Cube.svelte
 let travel = createTravel();
 
@@ -316,7 +316,7 @@ Adding the text to our scene can be done in a couple of ways:
 
 Adding the text itself is pretty simple, what about movement? For that I'm using a store to keep track of the mouse position:
 
-```javascript
+```js
 import { writable } from "svelte/store";
 
 export const mouse = writable({ x: 0, y: 0 });
@@ -324,7 +324,7 @@ export const mouse = writable({ x: 0, y: 0 });
 
 Then on `mousemove`, we udpate it with the distance from the mouse position to the center of the window:
 
-```javascript
+```js
 function handleMousemove(event: MouseEvent) {
   mouse.set({
     x: event.clientX - window.innerWidth / 2,
@@ -335,7 +335,7 @@ function handleMousemove(event: MouseEvent) {
 
 We can then use these values on our Text component:
 
-```javascript
+```js
 // Text.svelte
 
 <T.Group
@@ -361,7 +361,7 @@ We divide the `$mouse.x` and `y` values by 100 to make the rotation more subtle,
 
 Finally, we need to make our text "collidable", so the cubes can interact with it. For this we need only wrap the text in a collider, and specify an appropriate size:
 
-```javascript
+```js
 <Collider shape="cuboid" args={[10, 1, 0.2]}>
   // The text
 </Collider>

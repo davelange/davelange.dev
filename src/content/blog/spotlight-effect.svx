@@ -5,9 +5,7 @@ description: Spotlight effects can be a pretty creative way of revealing content
 canonical: https://blog.finiam.com/blog/spotlight-effect-with-js-and-css
 tags:
   - visual
-  - javascript
   - frontend
-  - animation
 coverImage: /public/media/spotlight.png
 ---
 

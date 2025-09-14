@@ -13,6 +13,10 @@
 
 <svelte:head>
   <title>Blog | Dave Lange</title>
+  <meta
+    name="description"
+    content="Some thoughts and guides on things"
+  />
 </svelte:head>
 
 <MainLayout>

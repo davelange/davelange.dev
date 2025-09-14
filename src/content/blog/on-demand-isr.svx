@@ -8,7 +8,7 @@ tags:
   - frontend
 ---
 
-_This was originally written for [Finiam](https://blog.finiam.com/blog/on-demand-isr-with-next-js-and-sanity)_
+_This was originally written for [Finiam](https://blog.finiam.com/blog/on-demand-isr-with-next-js-and-sanity)_ back in 2022, and is probably outdated.
 
 Static sites are great, right? You get excellent performance and can make the most out of CDNs and caching. Frameworks like Next.JS have made it quite easy to create and deploy static content, and you can mix it up with SSR (server side rendering) when needed.
 
@@ -56,11 +56,11 @@ However, you might need a little more flexibility and control - for instance you
 
 In these cases, you can use custom Sanity actions. Basically, these let you add buttons to the studio editor.
 
-![](https://i.imgur.com/flr6D44.png)
+![Sanity studio editor](https://i.imgur.com/flr6D44.png)
 
 You can find a good starter on [adding actions in Sanity's docs here](https://www.sanity.io/docs/document-actions), so I'll skip to the action itself:
 
-```javascript
+```js
 export function MovieUpdateBlog(props) {
   const [status, setStatus] = useState("pending");
 
@@ -101,7 +101,7 @@ export function MovieUpdateBlog(props) {
 
 First, we check what the document type is - in this case I only want this action to apply to `"movie"` documents. When the button is clicked, the `onHandle` function runs, and we pass in the document slug to a `revalidatePath` function: 
 
-```javascript
+```js
 async function revalidatePath(path: string) {
   try {
     const endpoint = new URL(FRONTEND_API_URL);
@@ -124,16 +124,13 @@ This sends the request with the updated path to our frontend's `revalidate` endp
 In most cases one updated piece of content will require other changes elsewhere. Imagine a static site about movies - the homepage will show links to each movie's page, and on that page there's a list of the movie's cast, who also have their own page:
 
 
-![](https://i.imgur.com/Z3VZdnW.png)
-
-
-*Fig.1: complex diagram clearly demonstrates how I could have been an architect*
+![Static site flow](https://i.imgur.com/Z3VZdnW.png)
 
 If we update Movie #1's name, we'll need to rebuild its page *and* the homepage, or else it would still show the old name. And if we update Person A's name, we need to also update the page of any movie that mentions them. 
 
 This will always depend on how your site is structured, but in this case we can deal with this logic within the action we just created:
 
-```javascript
+```js
 await revalidatePaths([`/movie/${props.draft.slug.current}`, "/"]);
 ```
 ```typescript
@@ -183,7 +180,7 @@ export default async function handler(
 
 So what about updates to Person pages? For that, we need a new action with a little more logic:
 
-```javascript
+```js
 export function OnUpdatePerson(props) {
   const [status, setStatus] = useState("pending");
 
@@ -227,7 +224,7 @@ export function OnUpdatePerson(props) {
 ```
 
 To know what movies mention the updated person, we need to query Sanity. And if you're wondering what on earth this is:
-```javascript
+```js
 `${SANITY_ENDPOINT}?query=*["${props.id}" in castMembers[].person._ref]`
 ```
 it's [GROQ](https://www.sanity.io/docs/groq), Sanity's custom query language. I would probably just use GraphQL, but I thought it would be interesting to try out GROQ for this demo. 
@@ -236,7 +233,7 @@ Anyway, the query returns an array of movies that refer to the person. So we jus
 
 ## Adding new data
 Does this work when creating new pages? Yes, but there's an important detail you might miss. In the movie page scenario, I'm using `getStaticPaths` + `getStaticProps`:
-```javascript
+```js
 export const getStaticPaths: GetStaticPaths = async () => {
   const { allMovie } = await getAllMovies();
 

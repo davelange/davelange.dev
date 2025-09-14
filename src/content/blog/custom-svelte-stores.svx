@@ -10,7 +10,7 @@ tags:
   - frontend
 ---
 
-*This was originally written for [Finiam](https://blog.finiam.com/blog/using-custom-svelte-stores)*
+*This was originally written for [Finiam](https://blog.finiam.com/blog/using-custom-svelte-stores) back in 2023. If you're using Svelte, you check out runes for your state management needs*
 
 With Svelte, we get an out of the box solution for state management - stores. According to the [docs](https://svelte.dev/docs#run-time-svelte-store), a store is any object with a subscribe, unsubscribe, and (optionally) a set method. Svelte provides the functions to easily create readable, writable, or derived stores.
 

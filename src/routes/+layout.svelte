@@ -13,6 +13,11 @@
 <svelte:head>
   <link rel="icon" href={favicon} />
   <title>Dave Lange</title>
+  <meta
+    name="description"
+    content="I'm a software developer. I help turn ideas into meaningful
+      tools and experiences."
+  />
 </svelte:head>
 
 <div class="main">
