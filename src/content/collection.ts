@@ -1,3 +1,4 @@
+import { error } from "@sveltejs/kit";
 import * as z from "zod";
 
 type CollectionOptions<
@@ -152,7 +153,9 @@ class Collection<
         meta: this.entries.find((item) => item.slug === slug)!
       };
     } catch (e: unknown) {
-      throw Error(`Could not find ${slug}`, { cause: e });
+      throw error(404, {
+        message: "Not Found"
+      });
     }
   }
 }
