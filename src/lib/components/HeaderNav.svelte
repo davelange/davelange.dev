@@ -45,7 +45,9 @@
         outline-color: var(--fg-brand-strong);
       }
 
-      &.active {
+      &.active,
+      &:hover,
+      &:focus-visible {
         color: var(--fg-brand-strong);
       }
     }

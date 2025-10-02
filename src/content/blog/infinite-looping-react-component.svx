@@ -1,6 +1,6 @@
 ---
 title: Infinite looping React component
-publishedAt: January 2022
+publishedAt: 2022-01-01
 description: A look into how flexible and useful stores can be in Svelte. Simple stores, custom stores, stores of stores - there's a lot of options out there.
 canonical: https://blog.finiam.com/blog/infinite-looping-react-component
 tags:
@@ -14,7 +14,7 @@ Not long ago, a project I was working on came up with an unusual requirement - b
 
 This is more or less what it looks like.
 
-<iframe height="500" style="width: 100%;" scrolling="no" title="Infinite looper" src="https://codepen.io/davelange_/embed/mdMwyoM?default-tab=result" frameborder="no" loading="lazy" allowtransparency="true" allowfullscreen="true">
+<iframe height="500" style="width: 100%;" scrolling="no" title="Infinite looper" src="https://codepen.io/davelange_/embed/mdMwyoM?default-tab=result" frameborder="no" loading="lazy">
   See the Pen <a href="https://codepen.io/davelange_/pen/mdMwyoM">
   Infinite looper</a> by David Lange (<a href="https://codepen.io/davelange_">@davelange_</a>)
   on <a href="https://codepen.io">CodePen</a>.

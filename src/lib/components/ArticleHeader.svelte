@@ -30,7 +30,7 @@
     </div>
   {/if}
 
-  <time class="date" datetime={publishedAt.toISOString()}>
+  <time class="date" datetime={formattedDate}>
     Published {formattedDate}
   </time>
 </header>

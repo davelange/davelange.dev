@@ -15,7 +15,9 @@
       I'm a software developer. I help turn ideas into meaningful
       tools and experiences.
     </p>
-    <PostCardList posts={data.posts} showTags={false} />
+    <div class="post-list">
+      <PostCardList posts={data.posts} showTags={false} />
+    </div>
     <HeaderNav />
   </div>
 
@@ -64,6 +66,10 @@
         margin: var(--48px) 0 var(--36px);
         padding-bottom: 0;
       }
+    }
+
+    .post-list {
+      margin-bottom: var(--16px);
     }
   }
 
