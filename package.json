@@ -41,6 +41,8 @@
 		"vite": "^7.0.4"
 	},
 	"dependencies": {
+		"@fontsource-variable/work-sans": "^5.2.8",
+		"@fontsource/ibm-plex-mono": "^5.2.7",
 		"lil-gui": "^0.20.0",
 		"rehype-autolink-headings": "^7.1.0",
 		"rehype-slug": "^6.0.0",

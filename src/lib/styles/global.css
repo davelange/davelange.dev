@@ -54,7 +54,7 @@
 
   /* Fonts */
   --font-mono: "IBM Plex Mono", monospace;
-  --font-sans: "Work Sans", sans-serif;
+  --font-sans: "Work Sans Variable", sans-serif;
 
   /* Layouts */
   --layout-max-width: 1600px;
@@ -80,8 +80,14 @@ html,
 body {
   margin: 0;
   width: 100%;
-  height: fit-content;
+  height: 100%;
   scroll-behavior: smooth;
+
+  scrollbar-gutter: stable;
+
+  > div {
+    height: 100%;
+  }
 }
 
 body {
@@ -225,4 +231,8 @@ p {
   @media (max-width: 768px) {
     display: none;
   }
+}
+
+.lil-gui {
+  height: fit-content;
 }

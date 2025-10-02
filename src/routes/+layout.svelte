@@ -1,4 +1,7 @@
 <script lang="ts">
+  import "@fontsource-variable/work-sans";
+  import "@fontsource/ibm-plex-mono";
+
   import favicon from "$lib/assets/favicon.png";
   import "$lib/styles/reset.css";
   import "$lib/styles/global.css";
@@ -29,6 +32,7 @@
     max-width: var(--layout-max-width);
     margin: 0 auto;
     padding: 0 var(--layout-x-padding);
+    min-height: 100vh;
 
     @media (min-width: 768px) {
       padding: var(--layout-y-padding) var(--layout-x-padding);
