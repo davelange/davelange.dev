@@ -73,6 +73,7 @@
     &:hover {
       .edit-button {
         opacity: 1;
+        z-index: 10;
       }
     }
   }

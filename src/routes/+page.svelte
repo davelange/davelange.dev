@@ -27,7 +27,7 @@
 <style>
   .landing-wrapper {
     max-width: var(--layout-max-width);
-    height: fit-content;
+    height: 100%;
     margin: 0 auto;
     display: grid;
     grid-template-areas:
@@ -52,7 +52,6 @@
     grid-area: content;
     display: flex;
     flex-direction: column;
-    padding-bottom: var(--48px);
 
     .greeting {
       font-size: var(--24px);
