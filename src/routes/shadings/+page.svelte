@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import ListingLayout from "$lib/components/ListingLayout.svelte";
   import ListingHeader from "$lib/components/ListingHeader.svelte";
   import MainLayout from "$lib/components/MainLayout.svelte";
@@ -24,7 +25,8 @@
     {/snippet}
 
     {#snippet mainSlot()}
-      <a href="shadings/lakes">Lakes</a>
+      <a href={resolve("/shadings/lakes")}>Lakes</a>
+      <a href={resolve("/shadings/glow")}>Glow</a>
     {/snippet}
   </ListingLayout>
 </MainLayout>
