@@ -488,13 +488,19 @@ export class HomeScene {
 }
 
 export function createScene({
-  onMount
+  onMount,
+  showGui
 }: {
   onMount: (arg: () => void) => void;
+  showGui?: boolean;
 }) {
   onMount(() => {
     const scene = new HomeScene();
     scene.render();
+
+    if (showGui) {
+      scene.gui.show();
+    }
 
     return () => {
       scene.destroy();

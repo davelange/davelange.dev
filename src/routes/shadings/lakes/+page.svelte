@@ -1,12 +1,13 @@
 <script lang="ts">
   import MainLayout from "$lib/components/MainLayout.svelte";
   import Header from "$lib/components/Header.svelte";
-  import { text } from "$lib/scene/config";
+  import { text } from "$lib/scenes/lake/config";
   import { onMount } from "svelte";
-  import { createScene } from "$lib/scene/main.svelte";
+  import { createScene } from "$lib/scenes/lake/main.svelte";
 
   createScene({
-    onMount
+    onMount,
+    showGui: true
   });
 </script>
 
@@ -52,7 +53,7 @@
     height: 100%;
     max-width: 1000px;
 
-    border-radius: 0.72rem;
+    border-radius: 4px;
     overflow: hidden;
     aspect-ratio: 1;
 

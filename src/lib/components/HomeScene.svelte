@@ -1,9 +1,9 @@
 <script lang="ts">
   import SettingsIcon from "~icons/feather/settings";
   import Icon from "./Icon.svelte";
-  import { text } from "$lib/scene/config";
+  import { text } from "$lib/scenes/lake/config";
   import { onMount } from "svelte";
-  import { createScene } from "$lib/scene/main.svelte";
+  import { createScene } from "$lib/scenes/lake/main.svelte";
 
   createScene({
     onMount
