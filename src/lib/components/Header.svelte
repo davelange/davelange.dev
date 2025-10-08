@@ -6,6 +6,7 @@
   import ThemeToggle from "./ThemeToggle.svelte";
   import HeaderNav from "./HeaderNav.svelte";
   import MobileNav from "./MobileNav.svelte";
+  import { resolve } from "$app/paths";
 
   let {
     contentSlot,
@@ -21,7 +22,7 @@
 {#snippet header()}
   <header class="header-content">
     <h1 class="name">
-      <a href="/">Dave Lange</a>
+      <a href={resolve("/")}>Dave Lange</a>
     </h1>
     <div class="header-actions">
       <ThemeToggle size={16} />

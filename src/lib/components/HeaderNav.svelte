@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import { resolve } from "$app/paths";
   import Contacts from "./Contacts.svelte";
 
   let pages = [
@@ -11,13 +12,13 @@
       label: "About",
       href: "/about"
     }
-  ];
+  ] as const;
 </script>
 
 <nav class="desktop-nav">
   {#each pages as link (link.href)}
     <a
-      href={link.href}
+      href={resolve(link.href)}
       class:active={link.href === page.url.pathname}
     >
       {link.label}

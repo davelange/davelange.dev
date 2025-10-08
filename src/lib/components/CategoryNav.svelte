@@ -1,5 +1,6 @@
 <script lang="ts">
   import Pill from "./Pill.svelte";
+  import { resolve } from "$app/paths";
 
   let {
     categories,
@@ -19,7 +20,9 @@
       <li>
         <Pill
           as="a"
-          href={`/blog/categories/${tag}`}
+          href={resolve("/blog/categories/[category]", {
+            category: tag
+          })}
           active={tag === activeCategory}
         >
           {tag}

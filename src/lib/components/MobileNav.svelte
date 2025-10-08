@@ -1,7 +1,7 @@
 <script lang="ts">
   import { slide } from "svelte/transition";
-  import { fade } from "svelte/transition";
   import { page } from "$app/state";
+  import { resolve } from "$app/paths";
   import type { Snippet } from "svelte";
   import GHIcon from "~icons/feather/github";
   import TWIcon from "~icons/feather/twitter";
@@ -27,7 +27,7 @@
       label: "About",
       href: "/about"
     }
-  ];
+  ] as const;
 
   let links = [
     {
@@ -35,7 +35,6 @@
       href: "https://github.com/davelange",
       icon: GHIcon
     },
-
     {
       label: "Twitter",
       href: "https://twitter.com/davelange_",
@@ -46,7 +45,7 @@
       href: "mailto:hello@davelange.dev",
       icon: EMIcon
     }
-  ];
+  ] as const;
 
   $effect(() => {
     if (isMobileNavOpen) {
@@ -71,10 +70,10 @@
 >
   <div class="content">
     {@render headerSlot?.()}
-    <nav transition:fade={{ duration: 80 }}>
+    <nav>
       {#each pages as link (link.href)}
         <a
-          href={link.href}
+          href={resolve(link.href)}
           class:active={link.href === page.url.pathname}
         >
           {link.label}

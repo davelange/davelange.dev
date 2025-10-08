@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import type { blogPosts } from "$content";
   import type { CollectionEntry } from "$content/collection";
   import Icon from "./Icon.svelte";
@@ -15,7 +16,12 @@
   } = $props();
 </script>
 
-<a href={`/blog/${slug}`} class="note-card">
+<a
+  href={resolve("/blog/[slug]", {
+    slug
+  })}
+  class="note-card"
+>
   <div class="title-link">
     <div class="icon">
       <Icon

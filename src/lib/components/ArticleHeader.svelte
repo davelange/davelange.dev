@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { blogPosts } from "$content";
+  import { resolve } from "$app/paths";
   import type { CollectionEntry } from "$content/collection";
   import Pill from "./Pill.svelte";
 
@@ -23,7 +24,12 @@
   {#if tags.length > 0}
     <div class="tags">
       {#each tags as tag (tag)}
-        <Pill as="a" href={`/blog/categories/${tag}`}>
+        <Pill
+          as="a"
+          href={resolve("/blog/categories/[category]", {
+            category: tag
+          })}
+        >
           {tag}
         </Pill>
       {/each}

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createProseObserver } from "$lib/prose-observer.svelte";
   import { onMount } from "svelte";
+  import { resolve } from "$app/paths";
   let { title, slug }: { title: string; slug: string } = $props();
 
   let show = $state(false);
@@ -24,7 +25,7 @@
 </script>
 
 <div class={["folio", { show }]}>
-  <a href="/blog">Blog /</a>
+  <a href={resolve("/blog")}>Blog /</a>
   <span>
     {title}
   </span>
