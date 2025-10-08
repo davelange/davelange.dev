@@ -5,6 +5,10 @@
 
   let pages = [
     {
+      label: "Things with shaders",
+      href: "/shadings"
+    },
+    {
       label: "Blog",
       href: "/blog"
     },

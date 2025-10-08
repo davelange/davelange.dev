@@ -25,5 +25,9 @@
       flex-direction: row;
       gap: var(--128px);
     }
+
+    .main {
+      flex: 1;
+    }
   }
 </style>
