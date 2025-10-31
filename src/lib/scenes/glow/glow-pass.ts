@@ -3,18 +3,13 @@ export const GlowPass = {
 
   uniforms: {
     u_time: { value: 0.0 },
-    u_displacement: { value: null },
-    u_waveScale: { value: 10 },
-    u_progress: { value: 0 },
-    u_starX: { value: 0 },
-    u_showWaves: { value: false },
-    u_width: { value: 0 },
-    u_height: { value: 0 },
-    u_lakes: { value: null },
-    u_starTexture: { value: null },
-    u_paperTexture: { value: null },
-    u_bgColor: { value: null },
-    u_bgColorSecondary: { value: null }
+    u_texture: { value: null },
+    u_glow_texture: { value: null },
+    u_wave_scale: { value: null },
+    u_step_lo: { value: null },
+    u_step_hi: { value: null },
+    width: { value: null },
+    height: { value: null }
   },
 
   vertexShader: /* glsl */ `
@@ -31,9 +26,41 @@ export const GlowPass = {
               
               varying vec2 vUv;
               
-              
-              void main() {                  
-                gl_FragColor = vec4(vUv, 1., 1.);              
+              uniform float u_time;
+              uniform float width;
+              uniform float height;
+              uniform sampler2D u_texture;
+              uniform sampler2D u_glow_texture;
+
+              float samples = 40.;
+              float PI = 3.141592653589793238;
+
+              vec3 bgColor = vec3(0.0, 0.0, 0.0);
+              vec4 blue = vec4(0.29, 0.39, 0.99, 1.);
+
+              void main() {      
+                vec2 toCenter = vec2(0.5) - vUv;
+                vec3 afterGlow = vec3(0., 0., 0.);
+                vec4 tex = texture2D(u_texture, vUv);              
+                vec4 glowTex = texture2D(u_glow_texture, vUv);              
+
+                float total = 0.;
+                for(float i = 0.; i < samples; i++ ) {
+                  float lerp = i/samples;
+                  float weight = sin(lerp * PI) * 1.3;
+                  vec4 tsample = texture2D(u_glow_texture, vUv + toCenter * lerp + vec2(0.01));              
+                  
+                  afterGlow += smoothstep(0.2, 1., tsample.r * 0.5 * weight) ;
+                  
+                  
+                  total += weight;
+                }
+                
+                afterGlow.rgb /= 20.;
+                tex += vec4(afterGlow, 1.) * 0.5;
+                
+                gl_FragColor = tex;
+
               }          
             `
 };

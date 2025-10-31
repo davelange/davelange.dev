@@ -10,9 +10,6 @@ varying vec2 vUv;
 vec3 bgColor = vec3(0.0, 0.0, 0.0);
 vec4 blue = vec4(0.29, 0.39, 0.99, 1.);
 
-float radius = 0.004;
-float threshold = 0.003;
-
 void main() {
     // Center point
     vec2 p = 2. * vUv - vec2(1.);
