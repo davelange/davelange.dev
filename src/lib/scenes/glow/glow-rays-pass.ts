@@ -1,16 +1,10 @@
-export const GlowPass = {
-  name: "Glow",
+export const GlowRaysPass = {
+  name: "GlowRaysPass",
 
   uniforms: {
     u_time: { value: 0.0 },
     u_texture: { value: null },
-    u_glow_texture: { value: null },
-    u_point_texture: { value: null },
-    u_wave_scale: { value: null },
-    u_step_lo: { value: null },
-    u_step_hi: { value: null },
-    width: { value: null },
-    height: { value: null }
+    u_glow_texture: { value: null }
   },
 
   vertexShader: /* glsl */ `
@@ -28,11 +22,8 @@ export const GlowPass = {
               varying vec2 vUv;
               
               uniform float u_time;
-              uniform float width;
-              uniform float height;
               uniform sampler2D u_texture;
               uniform sampler2D u_glow_texture;
-              uniform sampler2D u_point_texture;
 
               float samples = 40.;
               float PI = 3.141592653589793238;

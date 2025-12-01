@@ -1,4 +1,5 @@
 import * as THREE from "three";
+
 import {
   EffectComposer,
   OrbitControls,
@@ -6,23 +7,18 @@ import {
   ShaderPass
 } from "three/examples/jsm/Addons.js";
 import GUI from "lil-gui";
-//import { loadTexture, rand, wait } from "./utils";
-//import { colorsDark, colorsLight, lakeConfigs, text } from "./config";
-//import { RippleManager } from "./ripple";
-import { GlowPass } from "./glow-pass";
+import { GlowRaysPass } from "./glow-rays-pass";
 import { Tween } from "svelte/motion";
-import { cubicOut, expoInOut } from "svelte/easing";
+import { cubicOut, expoInOut, expoOut, quadIn } from "svelte/easing";
 import { themeManager } from "$lib/theme.svelte";
-import { createPubSub } from "$lib/pub";
-import { GlowPlane } from "./glow-plane";
-import vertex from "./glow-plane-vertex.glsl?raw";
-import fragment from "./glow-plane-fragment.glsl?raw";
+import vertex from "./glow-plane/vertex.glsl?raw";
+import fragment from "./glow-plane/fragment.glsl?raw";
 import particleVertex from "./particles/vertex.glsl?raw";
 import particleFragment from "./particles/fragment.glsl?raw";
 import { loadTexture } from "../lake/utils";
 import { FXAAPass } from "three/examples/jsm/postprocessing/FXAAPass.js";
-
-let post = true;
+import { MouseTracker } from "./mouse-tracker";
+import { settings } from "./settings";
 
 export class GlowScene {
   scene = new THREE.Scene();
@@ -33,38 +29,36 @@ export class GlowScene {
   camera = new THREE.PerspectiveCamera();
   clock = new THREE.Clock();
   controls: OrbitControls;
+  gui = new GUI();
 
   width = 0;
   height = 0;
 
-  state = {
-    enabled: true,
-    isFirstRun: true,
-    isEditing: false
-  };
-
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  settings: Record<string, any> = {
-    shader: {
-      waveScale: 1.4,
-      stepLo: 0.13,
-      stepHi: 0.68
-    },
-    particles: {
-      count: 20,
-      spread: 2,
-      baseSize: 20
-    }
-  };
-  gui = new GUI();
-
+  // Scenes
   preScene = new THREE.Scene();
-  glowScene = new THREE.Scene();
   preTexture = new THREE.WebGLRenderTarget();
+  glowScene = new THREE.Scene();
   glowTexture = new THREE.WebGLRenderTarget();
 
-  mouse = new THREE.Vector2(0, 0);
-  prevMouse = new THREE.Vector2(0, 0);
+  // State
+  state = {
+    enabled: true
+  };
+  settings = settings;
+
+  // Objects
+  cube!: THREE.Mesh<THREE.BoxGeometry, THREE.MeshPhysicalMaterial>;
+  glowPlane!: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
+  particles!: THREE.Points<
+    THREE.BufferGeometry,
+    THREE.ShaderMaterial
+  >;
+
+  // Tweens
+  cubeRotationTween = new Tween([0, 0], {
+    duration: 1500,
+    easing: expoOut
+  });
 
   constructor() {
     this.canvas = document.querySelector(
@@ -75,10 +69,8 @@ export class GlowScene {
     this.setupRenderer();
     this.setupCamera();
     this.setupResize();
-    //this.trackMouse();
     this.addObjects();
-    if (post) this.initPost();
-    this.setupEvents();
+    this.initPost();
     this.initSettings();
 
     this.controls = new OrbitControls(
@@ -86,11 +78,7 @@ export class GlowScene {
       this.renderer.domElement
     );
     this.controls.update();
-
-    //this.pubs.publish("phase", this.state.phase);
   }
-
-  setupEvents() {}
 
   setupRenderer() {
     this.renderer = new THREE.WebGLRenderer({
@@ -153,20 +141,6 @@ export class GlowScene {
     });
   }
 
-  trackMouse() {
-    window.addEventListener("mousemove", (event) => {
-      const { left, top, bottom } =
-        this.canvas.getBoundingClientRect();
-      const x =
-        event.clientX > left ? event.clientX - left : event.clientX;
-      const outsideY = event.clientY < top || event.clientY > bottom;
-      this.mouse.x = x - this.width / 2;
-      this.mouse.y = outsideY
-        ? 0
-        : this.height / 2 + top - event.clientY;
-    });
-  }
-
   setupCamera() {
     this.camera = new THREE.PerspectiveCamera(
       45,
@@ -186,47 +160,29 @@ export class GlowScene {
 
   initPost() {
     this.composer = new EffectComposer(this.renderer);
-    this.shaderPass = new ShaderPass(GlowPass);
+    this.shaderPass = new ShaderPass(GlowRaysPass);
     this.shaderPass.uniforms.u_time = new THREE.Uniform(0);
     this.shaderPass.uniforms.u_texture = new THREE.Uniform(null);
     this.shaderPass.uniforms.u_glow_texture = new THREE.Uniform(null);
-    this.shaderPass.uniforms.u_point_texture = new THREE.Uniform(
-      loadTexture("/assets/paper2.png")
-    );
-    this.shaderPass.uniforms.u_wave_scale = new THREE.Uniform(null);
-    this.shaderPass.uniforms.u_step_lo = new THREE.Uniform(null);
-    this.shaderPass.uniforms.u_step_hi = new THREE.Uniform(null);
-    this.shaderPass.uniforms.width = new THREE.Uniform(this.width);
-    this.shaderPass.uniforms.height = new THREE.Uniform(this.height);
 
     this.composer.addPass(this.shaderPass);
     this.composer.addPass(new FXAAPass());
   }
-
-  glowPlane!: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
-  globes: Array<{
-    mesh: THREE.Mesh;
-    light: THREE.PointLight;
-    velocity: THREE.Vector3;
-    offset: THREE.Vector3;
-  }> = [];
 
   addGlowPlane() {
     const size = 0.8;
     const geometry = new THREE.PlaneGeometry(size, size);
 
     const material = new THREE.ShaderMaterial({
-      //transparent: true,
       vertexShader: vertex,
       fragmentShader: fragment,
-
       uniforms: {
         time: new THREE.Uniform(0),
-        waveScale: new THREE.Uniform(this.settings.waveScale),
+        waveScale: new THREE.Uniform(this.settings.shader.waveScale),
         width: new THREE.Uniform(this.width),
         height: new THREE.Uniform(this.height),
-        stepLo: new THREE.Uniform(this.settings.stepLo),
-        stepHi: new THREE.Uniform(this.settings.stepHi)
+        stepLo: new THREE.Uniform(this.settings.shader.stepLo),
+        stepHi: new THREE.Uniform(this.settings.shader.stepHi)
       }
     });
 
@@ -234,7 +190,17 @@ export class GlowScene {
     this.preScene.add(this.glowPlane);
   }
 
-  cube!: THREE.Mesh<THREE.BoxGeometry, THREE.MeshPhysicalMaterial>;
+  cubeRestingRotation = new THREE.Vector2(0, 0);
+  cubeRestingRotationEnabled = true;
+
+  updateCube() {
+    if (!this.cubeRestingRotationEnabled) {
+      this.cube.rotation.x = this.cubeRotationTween.current[0];
+      this.cube.rotation.y = this.cubeRotationTween.current[1];
+    } else {
+      this.cube.rotateOnWorldAxis(new THREE.Vector3(1, 1, 0), 0.001);
+    }
+  }
 
   addCube() {
     const size = 0.7;
@@ -255,7 +221,7 @@ export class GlowScene {
       envMapIntensity: 2.22
     });
 
-    // settings
+    // Settings
     const folder = this.gui.addFolder("Cube");
     folder.add(material, "roughness", 0, 5, 0.01);
     folder.add(material, "transmission", 0, 5, 0.01);
@@ -296,7 +262,7 @@ export class GlowScene {
     ambFolder.add(ambientLight, "intensity", 0, 2, 0.01);
     ambFolder
       .addColor({ color: ambientLight.color.getHex() }, "color")
-      .onChange((value) => {
+      .onChange((value: number) => {
         ambientLight.color.setHex(value);
       });
 
@@ -304,7 +270,7 @@ export class GlowScene {
     dirFolder.add(directionalLight, "intensity", 0, 2, 0.01);
     dirFolder
       .addColor({ color: directionalLight.color.getHex() }, "color")
-      .onChange((value) => {
+      .onChange((value: number) => {
         directionalLight.color.setHex(value);
       });
     dirFolder.add(directionalLight.position, "x", -10, 10, 0.1);
@@ -315,25 +281,20 @@ export class GlowScene {
     ptFolder.add(pointLight, "intensity", 0, 2, 0.01);
     ptFolder
       .addColor({ color: pointLight.color.getHex() }, "color")
-      .onChange((value) => {
+      .onChange((value: number) => {
         pointLight.color.setHex(value);
       });
     ptFolder.add(pointLight.position, "x", -10, 10, 0.1);
     ptFolder.add(pointLight.position, "y", -10, 10, 0.1);
     ptFolder.add(pointLight.position, "z", -10, 10, 0.1);
 
-    lightFolder.open();
-    ambFolder.open();
-    dirFolder.open();
-    ptFolder.open();
+    lightFolder.close();
+    ambFolder.close();
+    dirFolder.close();
+    ptFolder.close();
 
     this.preScene.add(lightGroup);
   }
-
-  particles!: THREE.Points<
-    THREE.BufferGeometry,
-    THREE.ShaderMaterial
-  >;
 
   handleParticlesUpdate() {
     this.particles.clear();
@@ -342,6 +303,7 @@ export class GlowScene {
   }
 
   addParticles() {
+    // Settings
     const folder = this.gui.addFolder("Particles");
     folder
       .add(this.settings.particles, "count")
@@ -372,7 +334,7 @@ export class GlowScene {
       positions[idx + 1] =
         (Math.random() - 0.5) * this.settings.particles.spread;
       positions[idx + 2] =
-        Math.random() * this.settings.particles.spread;
+        Math.random() * this.settings.particles.spread * 2;
 
       scales[i] = Math.random() * 2;
     }
@@ -397,6 +359,9 @@ export class GlowScene {
         },
         uTime: {
           value: 0
+        },
+        uMouseX: {
+          value: 0
         }
       },
       transparent: true,
@@ -415,6 +380,19 @@ export class GlowScene {
     this.addParticles();
   }
 
+  mouseTracker = new MouseTracker({
+    threshold: 100,
+    window: 500,
+    onForce: (x, y) => {
+      this.cubeRestingRotationEnabled = false;
+      this.cubeRotationTween.set([y, x]).then(() => {
+        this.cubeRestingRotation.set(x > 0 ? 1 : -1, y > 0 ? -1 : 1);
+
+        this.cubeRestingRotationEnabled = true;
+      });
+    }
+  });
+
   addGradientBg() {
     const material = new THREE.SpriteMaterial({
       color: 0x515890,
@@ -428,7 +406,7 @@ export class GlowScene {
     folder.add(material, "opacity", 0, 1, 0.01);
     folder
       .addColor({ color: material.color.getHex() }, "color")
-      .onChange((value) => {
+      .onChange((value: number) => {
         material.color.setHex(value);
       });
 
@@ -445,6 +423,9 @@ export class GlowScene {
 
     const elapsedTime = this.clock.getElapsedTime();
 
+    this.updateCube();
+
+    // Glow plane uniforms
     this.glowPlane.material.uniforms.time.value = elapsedTime;
     this.glowPlane.material.uniforms.waveScale.value =
       this.settings.shader.waveScale;
@@ -453,35 +434,33 @@ export class GlowScene {
     this.glowPlane.material.uniforms.stepHi.value =
       this.settings.shader.stepHi;
 
-    const xAxis = new THREE.Vector3(1, 0, 0);
-    const yAxis = new THREE.Vector3(0, 1, 0);
-
-    this.cube.rotateOnWorldAxis(xAxis, 0.001);
-    this.cube.rotateOnWorldAxis(yAxis, 0.001);
-
+    // Particles uniforms
     this.particles.material.uniforms.uTime.value = elapsedTime;
-
-    if (post) {
-      this.renderer.setRenderTarget(this.glowTexture);
-      this.cube.visible = false;
-      this.renderer.render(this.preScene, this.camera);
-      this.cube.visible = true;
-
-      // Render pre scene
-      this.renderer.setRenderTarget(this.preTexture);
-      this.renderer.render(this.preScene, this.camera);
-
-      // Pass rendered scene texture to shader
-      this.shaderPass.uniforms.u_texture.value =
-        this.preTexture.texture;
-      this.shaderPass.uniforms.u_glow_texture.value =
-        this.glowTexture.texture;
-      this.shaderPass.material.uniforms.u_time.value = elapsedTime;
-
-      this.composer.render();
+    if (!this.cubeRestingRotationEnabled) {
+      this.particles.material.uniforms.uMouseX.value =
+        this.cubeRotationTween.current[1] / 100;
     } else {
-      this.renderer.render(this.preScene, this.camera);
+      this.particles.material.uniforms.uMouseX.value = 0;
     }
+
+    this.renderer.setRenderTarget(this.glowTexture);
+    this.cube.visible = false;
+    this.renderer.render(this.preScene, this.camera);
+    this.cube.visible = true;
+
+    // Render pre scene
+    this.renderer.setRenderTarget(this.preTexture);
+    this.renderer.render(this.preScene, this.camera);
+
+    // Pass rendered scene texture to shader
+    this.shaderPass.uniforms.u_texture.value =
+      this.preTexture.texture;
+    this.shaderPass.uniforms.u_glow_texture.value =
+      this.glowTexture.texture;
+    this.shaderPass.material.uniforms.u_time.value = elapsedTime;
+
+    // Render
+    this.composer.render();
 
     window.requestAnimationFrame(this.render.bind(this));
   }
@@ -489,9 +468,9 @@ export class GlowScene {
   destroy() {
     this.renderer.dispose();
     this.composer?.dispose();
-    //this.shaderPass.dispose();
     this.state.enabled = false;
     this.gui.destroy();
+    this.mouseTracker.destroy();
     themeManager.off();
   }
 }
