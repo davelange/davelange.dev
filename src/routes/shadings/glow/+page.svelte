@@ -6,7 +6,7 @@
 
   createScene({
     onMount,
-    showGui: true
+    showGui: false
   });
 </script>
 
@@ -36,7 +36,8 @@
 
     width: 100%;
     height: 100%;
-    max-width: 1000px;
+    max-width: 90vmin;
+    max-height: 90vmin;
 
     border-radius: 4px;
     overflow: hidden;

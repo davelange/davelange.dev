@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import {
   EffectComposer,
+  OrbitControls,
   RoundedBoxGeometry,
   ShaderPass
 } from "three/examples/jsm/Addons.js";
@@ -16,6 +17,8 @@ import { createPubSub } from "$lib/pub";
 import { GlowPlane } from "./glow-plane";
 import vertex from "./glow-plane-vertex.glsl?raw";
 import fragment from "./glow-plane-fragment.glsl?raw";
+import particleVertex from "./particles/vertex.glsl?raw";
+import particleFragment from "./particles/fragment.glsl?raw";
 import { loadTexture } from "../lake/utils";
 import { FXAAPass } from "three/examples/jsm/postprocessing/FXAAPass.js";
 
@@ -29,6 +32,7 @@ export class GlowScene {
   canvas: HTMLCanvasElement;
   camera = new THREE.PerspectiveCamera();
   clock = new THREE.Clock();
+  controls: OrbitControls;
 
   width = 0;
   height = 0;
@@ -45,6 +49,11 @@ export class GlowScene {
       waveScale: 1.4,
       stepLo: 0.13,
       stepHi: 0.68
+    },
+    particles: {
+      count: 20,
+      spread: 2,
+      baseSize: 20
     }
   };
   gui = new GUI();
@@ -66,11 +75,17 @@ export class GlowScene {
     this.setupRenderer();
     this.setupCamera();
     this.setupResize();
-    this.trackMouse();
+    //this.trackMouse();
     this.addObjects();
     if (post) this.initPost();
     this.setupEvents();
     this.initSettings();
+
+    this.controls = new OrbitControls(
+      this.camera,
+      this.renderer.domElement
+    );
+    this.controls.update();
 
     //this.pubs.publish("phase", this.state.phase);
   }
@@ -153,18 +168,6 @@ export class GlowScene {
   }
 
   setupCamera() {
-    /* const frustrum = this.height;
-    const aspect = this.width / this.height;
-    this.camera = new THREE.OrthographicCamera(
-      (frustrum * aspect) / -2,
-      (frustrum * aspect) / 2,
-      frustrum / 2,
-      frustrum / -2,
-      -1000,
-      1000
-    );
-    this.camera.position.set(0, 0, 82);
-    this.camera.lookAt(0, 0, 0); */
     this.camera = new THREE.PerspectiveCamera(
       45,
       this.width / this.height,
@@ -187,6 +190,9 @@ export class GlowScene {
     this.shaderPass.uniforms.u_time = new THREE.Uniform(0);
     this.shaderPass.uniforms.u_texture = new THREE.Uniform(null);
     this.shaderPass.uniforms.u_glow_texture = new THREE.Uniform(null);
+    this.shaderPass.uniforms.u_point_texture = new THREE.Uniform(
+      loadTexture("/assets/paper2.png")
+    );
     this.shaderPass.uniforms.u_wave_scale = new THREE.Uniform(null);
     this.shaderPass.uniforms.u_step_lo = new THREE.Uniform(null);
     this.shaderPass.uniforms.u_step_hi = new THREE.Uniform(null);
@@ -198,6 +204,12 @@ export class GlowScene {
   }
 
   glowPlane!: THREE.Mesh<THREE.PlaneGeometry, THREE.ShaderMaterial>;
+  globes: Array<{
+    mesh: THREE.Mesh;
+    light: THREE.PointLight;
+    velocity: THREE.Vector3;
+    offset: THREE.Vector3;
+  }> = [];
 
   addGlowPlane() {
     const size = 0.8;
@@ -318,14 +330,118 @@ export class GlowScene {
     this.preScene.add(lightGroup);
   }
 
+  particles!: THREE.Points<
+    THREE.BufferGeometry,
+    THREE.ShaderMaterial
+  >;
+
+  handleParticlesUpdate() {
+    this.particles.clear();
+    this.preScene.remove(this.particles);
+    this.addParticles();
+  }
+
+  addParticles() {
+    const folder = this.gui.addFolder("Particles");
+    folder
+      .add(this.settings.particles, "count")
+      .min(0)
+      .max(1000)
+      .onFinishChange(this.handleParticlesUpdate.bind(this));
+    folder
+      .add(this.settings.particles, "spread")
+      .min(0)
+      .max(5)
+      .onFinishChange(this.handleParticlesUpdate.bind(this));
+    folder
+      .add(this.settings.particles, "baseSize")
+      .min(0)
+      .max(50)
+      .onFinishChange(this.handleParticlesUpdate.bind(this));
+
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(
+      this.settings.particles.count * 3
+    );
+    const scales = new Float32Array(this.settings.particles.count);
+
+    for (let i = 0; i <= this.settings.particles.count * 3; i++) {
+      const idx = i * 3;
+      positions[idx] =
+        (Math.random() - 0.5) * this.settings.particles.spread;
+      positions[idx + 1] =
+        (Math.random() - 0.5) * this.settings.particles.spread;
+      positions[idx + 2] =
+        Math.random() * this.settings.particles.spread;
+
+      scales[i] = Math.random() * 2;
+    }
+
+    geometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(positions, 3)
+    );
+    geometry.setAttribute(
+      "aScale",
+      new THREE.BufferAttribute(scales, 1)
+    );
+
+    const material = new THREE.ShaderMaterial({
+      fragmentShader: particleFragment,
+      vertexShader: particleVertex,
+      uniforms: {
+        uSize: {
+          value:
+            this.settings.particles.baseSize *
+            this.renderer.getPixelRatio()
+        },
+        uTime: {
+          value: 0
+        }
+      },
+      transparent: true,
+      blending: THREE.AdditiveBlending
+    });
+
+    this.particles = new THREE.Points(geometry, material);
+    this.preScene.add(this.particles);
+  }
+
   addObjects() {
+    this.addGradientBg();
     this.addGlowPlane();
     this.addCube();
     this.addLights();
+    this.addParticles();
+  }
+
+  addGradientBg() {
+    const material = new THREE.SpriteMaterial({
+      color: 0x515890,
+      fog: true,
+      map: loadTexture("/assets/glow/grad.png"),
+      transparent: true,
+      opacity: 0.18
+    });
+
+    const folder = this.gui.addFolder("Gradient");
+    folder.add(material, "opacity", 0, 1, 0.01);
+    folder
+      .addColor({ color: material.color.getHex() }, "color")
+      .onChange((value) => {
+        material.color.setHex(value);
+      });
+
+    const sprite = new THREE.Sprite(material);
+    sprite.scale.set(8, 8, 1);
+
+    this.preScene.add(sprite);
   }
 
   render() {
     if (!this.state.enabled) return;
+
+    this.controls.update();
 
     const elapsedTime = this.clock.getElapsedTime();
 
@@ -342,6 +458,8 @@ export class GlowScene {
 
     this.cube.rotateOnWorldAxis(xAxis, 0.001);
     this.cube.rotateOnWorldAxis(yAxis, 0.001);
+
+    this.particles.material.uniforms.uTime.value = elapsedTime;
 
     if (post) {
       this.renderer.setRenderTarget(this.glowTexture);
