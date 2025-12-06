@@ -59,8 +59,7 @@ export class HomeScene {
     this.timeouts = [];
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  settings: Record<string, any> = {
+  settings = {
     shader: {
       u_waveScale: 10,
       u_showWaves: false,

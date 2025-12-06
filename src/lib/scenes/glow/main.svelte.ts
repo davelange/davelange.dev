@@ -9,7 +9,13 @@ import {
 import GUI from "lil-gui";
 import { GlowRaysPass } from "./glow-rays-pass";
 import { Tween } from "svelte/motion";
-import { cubicOut, expoInOut, expoOut, quadIn } from "svelte/easing";
+import {
+  circInOut,
+  cubicOut,
+  expoInOut,
+  expoOut,
+  quadIn
+} from "svelte/easing";
 import { themeManager } from "$lib/theme.svelte";
 import vertex from "./glow-plane/vertex.glsl?raw";
 import fragment from "./glow-plane/fragment.glsl?raw";
@@ -18,7 +24,7 @@ import particleFragment from "./particles/fragment.glsl?raw";
 import { loadTexture } from "../lake/utils";
 import { FXAAPass } from "three/examples/jsm/postprocessing/FXAAPass.js";
 import { MouseTracker } from "./mouse-tracker";
-import { settings } from "./settings";
+import { gradientColors, settings } from "./settings";
 
 export class GlowScene {
   scene = new THREE.Scene();
@@ -53,11 +59,16 @@ export class GlowScene {
     THREE.BufferGeometry,
     THREE.ShaderMaterial
   >;
+  gradient!: THREE.Sprite;
 
   // Tweens
   cubeRotationTween = new Tween([0, 0], {
     duration: 1500,
     easing: expoOut
+  });
+  gradientColorTween = new Tween(gradientColors[0], {
+    duration: 2000,
+    easing: circInOut
   });
 
   constructor() {
@@ -318,7 +329,7 @@ export class GlowScene {
     folder
       .add(this.settings.particles, "baseSize")
       .min(0)
-      .max(50)
+      .max(100)
       .onFinishChange(this.handleParticlesUpdate.bind(this));
 
     const geometry = new THREE.BufferGeometry();
@@ -326,6 +337,11 @@ export class GlowScene {
       this.settings.particles.count * 3
     );
     const scales = new Float32Array(this.settings.particles.count);
+    const colors = new Float32Array(
+      this.settings.particles.count * 3
+    );
+    const color = new THREE.Color(0x6363fc);
+    const colorVariation = new THREE.Color(0x7563fd);
 
     for (let i = 0; i <= this.settings.particles.count * 3; i++) {
       const idx = i * 3;
@@ -334,9 +350,16 @@ export class GlowScene {
       positions[idx + 1] =
         (Math.random() - 0.5) * this.settings.particles.spread;
       positions[idx + 2] =
-        Math.random() * this.settings.particles.spread * 2;
+        Math.random() * this.settings.particles.spread;
 
       scales[i] = Math.random() * 2;
+
+      const colorPoint = color
+        .clone()
+        .lerp(colorVariation, Math.random());
+      colors[idx] = colorPoint.r;
+      colors[idx + 1] = colorPoint.g;
+      colors[idx + 2] = colorPoint.b;
     }
 
     geometry.setAttribute(
@@ -346,6 +369,10 @@ export class GlowScene {
     geometry.setAttribute(
       "aScale",
       new THREE.BufferAttribute(scales, 1)
+    );
+    geometry.setAttribute(
+      "aColor",
+      new THREE.BufferAttribute(colors, 3)
     );
 
     const material = new THREE.ShaderMaterial({
@@ -360,7 +387,7 @@ export class GlowScene {
         uTime: {
           value: 0
         },
-        uMouseX: {
+        uMouseForce: {
           value: 0
         }
       },
@@ -381,17 +408,26 @@ export class GlowScene {
   }
 
   mouseTracker = new MouseTracker({
-    threshold: 100,
-    window: 500,
+    threshold: 30,
+    window: 1200,
+    forceFactor: 0.8,
     onForce: (x, y) => {
       this.cubeRestingRotationEnabled = false;
       this.cubeRotationTween.set([y, x]).then(() => {
         this.cubeRestingRotation.set(x > 0 ? 1 : -1, y > 0 ? -1 : 1);
-
         this.cubeRestingRotationEnabled = true;
       });
-    }
+    },
+    gui: this.gui
   });
+
+  updateGradientColor(nextColorIdx = 1) {
+    this.gradientColorTween
+      .set(gradientColors[nextColorIdx % gradientColors.length])
+      .then(() => {
+        this.updateGradientColor(nextColorIdx + 1);
+      });
+  }
 
   addGradientBg() {
     const material = new THREE.SpriteMaterial({
@@ -410,10 +446,10 @@ export class GlowScene {
         material.color.setHex(value);
       });
 
-    const sprite = new THREE.Sprite(material);
-    sprite.scale.set(8, 8, 1);
-
-    this.preScene.add(sprite);
+    this.gradient = new THREE.Sprite(material);
+    this.gradient.scale.set(8, 8, 1);
+    this.preScene.add(this.gradient);
+    this.updateGradientColor();
   }
 
   render() {
@@ -437,11 +473,14 @@ export class GlowScene {
     // Particles uniforms
     this.particles.material.uniforms.uTime.value = elapsedTime;
     if (!this.cubeRestingRotationEnabled) {
-      this.particles.material.uniforms.uMouseX.value =
+      this.particles.material.uniforms.uMouseForce.value =
         this.cubeRotationTween.current[1] / 100;
     } else {
-      this.particles.material.uniforms.uMouseX.value = 0;
+      this.particles.material.uniforms.uMouseForce.value = 0;
     }
+
+    //Gradient
+    this.gradient.material.color.set(this.gradientColorTween.current);
 
     this.renderer.setRenderTarget(this.glowTexture);
     this.cube.visible = false;

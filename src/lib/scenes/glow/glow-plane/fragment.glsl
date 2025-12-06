@@ -22,7 +22,6 @@ void main() {
 
     // Waves
     vec2 waves = p;
-
     vec3 finalColor = bgColor;
 
     waves += 0.17 * cos(waveScale * 3.7 * waves.yx + 1.23 * timeSlow * vec2(2.2, 3.4));
