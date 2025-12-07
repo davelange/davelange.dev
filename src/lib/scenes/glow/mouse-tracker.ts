@@ -1,38 +1,48 @@
 import type GUI from "lil-gui";
-import * as THREE from "three";
-import { degToRad } from "three/src/math/MathUtils.js";
 
+type OnChange = {
+  x: number;
+  y: number;
+  xDelta: number;
+  yDelta: number;
+};
 export class MouseTracker {
-  position = new THREE.Vector2(0, 0);
+  locked = false;
+  deltaLocked = false;
+  prevData = [0, 0];
 
+  // Options
   interval?: ReturnType<typeof setTimeout>;
-  isPolling = false;
-
   threshold = 300;
   window = 300;
-  forceFactor = 0.8;
 
-  onForce: (x: number, y: number) => void;
+  xCenter = window.innerWidth / 2;
+  yCenter = window.innerHeight / 2;
+
+  onForce: (args: OnChange) => void;
+
+  handleResize() {
+    this.xCenter = window.innerWidth / 2;
+    this.yCenter = window.innerHeight / 2;
+  }
 
   constructor({
     onForce,
     threshold,
     window,
-    forceFactor,
     gui
   }: {
-    onForce: (x: number, y: number) => void;
+    onForce: (args: OnChange) => void;
     threshold: number;
     window: number;
-    forceFactor: number;
     gui: GUI;
   }) {
     this.onForce = onForce;
-    this.trackMouse();
     this.threshold = threshold;
     this.window = window;
-    this.forceFactor = forceFactor;
 
+    this.trackMouse();
+    this.trackResize();
     this.initGui(gui);
   }
 
@@ -40,38 +50,43 @@ export class MouseTracker {
     const folder = gui.addFolder("Mouse Tracker");
     folder.add(this, "threshold").min(0).max(1000).step(1);
     folder.add(this, "window").min(0).max(3000).step(1);
-    folder.add(this, "forceFactor").min(-1).max(10).step(0.01);
   }
 
   private handleMouseMove(event: MouseEvent) {
-    if (!this.isPolling) {
-      this.isPolling = true;
-      this.position.x = event.clientX;
-      this.position.y = event.clientY;
+    const diffX = event.clientX - this.xCenter;
+    const diffY = event.clientY - this.yCenter;
 
+    const x = diffX / this.xCenter;
+    const y = diffY / this.yCenter;
+
+    if (!this.locked) {
+      this.locked = true;
+      this.prevData = [x, y];
       this.interval = setTimeout(() => {
-        this.isPolling = false;
+        this.locked = false;
       }, this.window);
 
       return;
     }
 
-    const diffX = event.clientX - this.position.x;
-    const diffY = event.clientY - this.position.y;
+    const xDelta = Math.abs(x - this.prevData[0]);
+    const yDelta = Math.abs(y - this.prevData[1]);
 
-    if (
-      Math.abs(diffX) > this.threshold ||
-      Math.abs(diffY) > this.threshold
-    ) {
-      const toRotation = (val: number) =>
-        degToRad(val * this.forceFactor);
+    if ((xDelta > 0.5 || yDelta > 0.5) && !this.deltaLocked) {
+      this.prevData = [x, y];
+      this.deltaLocked = true;
 
-      this.onForce(toRotation(diffX), toRotation(diffY));
-
-      clearTimeout(this.interval);
-
-      this.isPolling = false;
+      setTimeout(() => {
+        this.deltaLocked = false;
+      }, 4000);
     }
+
+    this.onForce({
+      x,
+      y,
+      xDelta,
+      yDelta
+    });
   }
 
   private trackMouse() {
@@ -81,10 +96,15 @@ export class MouseTracker {
     );
   }
 
+  private trackResize() {
+    window.addEventListener("resize", this.handleResize.bind(this));
+  }
+
   destroy() {
     if (this.interval) {
       clearTimeout(this.interval);
     }
     window.removeEventListener("mousemove", this.handleMouseMove);
+    window.removeEventListener("resize", this.handleResize);
   }
 }

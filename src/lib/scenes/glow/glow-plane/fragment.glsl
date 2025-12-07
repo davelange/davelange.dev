@@ -40,5 +40,5 @@ void main() {
     float fadeToBlack = 1.0 - smoothstep(0.5, 0.9, squareDistance);
     finalColor *= fadeToBlack;
 
-    gl_FragColor = vec4(finalColor, 1.);
+    gl_FragColor = vec4(finalColor, fadeToBlack);
 }

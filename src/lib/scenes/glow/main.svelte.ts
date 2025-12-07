@@ -9,13 +9,7 @@ import {
 import GUI from "lil-gui";
 import { GlowRaysPass } from "./glow-rays-pass";
 import { Tween } from "svelte/motion";
-import {
-  circInOut,
-  cubicOut,
-  expoInOut,
-  expoOut,
-  quadIn
-} from "svelte/easing";
+import { circInOut, expoOut } from "svelte/easing";
 import { themeManager } from "$lib/theme.svelte";
 import vertex from "./glow-plane/vertex.glsl?raw";
 import fragment from "./glow-plane/fragment.glsl?raw";
@@ -25,7 +19,6 @@ import { loadTexture } from "../lake/utils";
 import { FXAAPass } from "three/examples/jsm/postprocessing/FXAAPass.js";
 import { MouseTracker } from "./mouse-tracker";
 import { settings } from "./settings";
-
 export class GlowScene {
   scene = new THREE.Scene();
   composer!: EffectComposer;
@@ -63,6 +56,10 @@ export class GlowScene {
 
   // Tweens
   cubeRotationTween = new Tween([0, 0], {
+    duration: 1500,
+    easing: expoOut
+  });
+  cubePositionTween = new Tween([0, 0], {
     duration: 1500,
     easing: expoOut
   });
@@ -175,6 +172,7 @@ export class GlowScene {
     this.shaderPass.uniforms.u_time = new THREE.Uniform(0);
     this.shaderPass.uniforms.u_texture = new THREE.Uniform(null);
     this.shaderPass.uniforms.u_glow_texture = new THREE.Uniform(null);
+    this.shaderPass.uniforms.u_reveal_progress = new THREE.Uniform(0);
 
     this.composer.addPass(this.shaderPass);
     this.composer.addPass(new FXAAPass());
@@ -198,6 +196,7 @@ export class GlowScene {
     });
 
     this.glowPlane = new THREE.Mesh(geometry, material);
+    this.glowPlane.position.z = -0.5;
     this.preScene.add(this.glowPlane);
   }
 
@@ -205,12 +204,25 @@ export class GlowScene {
   cubeRestingRotationEnabled = true;
 
   updateCube() {
-    if (!this.cubeRestingRotationEnabled) {
-      this.cube.rotation.x = this.cubeRotationTween.current[0];
-      this.cube.rotation.y = this.cubeRotationTween.current[1];
-    } else {
-      this.cube.rotateOnWorldAxis(new THREE.Vector3(1, 1, 0), 0.001);
-    }
+    //Rotation
+    const [rx, ry] = this.cubeRotationTween.current;
+
+    this.cube.rotation.x =
+      rx * (Math.PI * this.settings.cube.rotationForce);
+    this.cube.rotation.y =
+      ry * (Math.PI * this.settings.cube.rotationForce);
+
+    this.glowPlane.rotation.x =
+      rx * (Math.PI * this.settings.cube.rotationForce * 0.2);
+    this.glowPlane.rotation.y =
+      ry * (Math.PI * this.settings.cube.rotationForce * 0.2);
+
+    // Position
+    const [px, py] = this.cubePositionTween.current;
+
+    this.cube.position.x = px * 0.1;
+    this.cube.position.y = py * 0.1 * -1;
+    this.glowPlane.position.y = py * 0.06 * -1;
   }
 
   addCube() {
@@ -243,6 +255,13 @@ export class GlowScene {
     folder.add(material, "metalness", 0, 5, 0.01);
     folder.add(material, "envMapIntensity", 0, 5, 0.01);
     folder.add(material, "visible");
+    folder.add(
+      this.settings.animation,
+      "cubeRevealProgress",
+      0,
+      1,
+      0.01
+    );
 
     this.cube = new THREE.Mesh(geometry, material);
     this.cube.position.set(0, 0, 1);
@@ -415,13 +434,9 @@ export class GlowScene {
   mouseTracker = new MouseTracker({
     threshold: 30,
     window: 1200,
-    forceFactor: 0.8,
-    onForce: (x, y) => {
-      this.cubeRestingRotationEnabled = false;
-      this.cubeRotationTween.set([y, x]).then(() => {
-        this.cubeRestingRotation.set(x > 0 ? 1 : -1, y > 0 ? -1 : 1);
-        this.cubeRestingRotationEnabled = true;
-      });
+    onForce: ({ x, y }) => {
+      this.cubeRotationTween.set([y, x]);
+      this.cubePositionTween.set([x, y]);
     },
     gui: this.gui
   });
@@ -498,6 +513,8 @@ export class GlowScene {
     this.shaderPass.uniforms.u_glow_texture.value =
       this.glowTexture.texture;
     this.shaderPass.material.uniforms.u_time.value = elapsedTime;
+    this.shaderPass.material.uniforms.u_reveal_progress.value =
+      this.settings.animation.cubeRevealProgress;
 
     // Render
     this.composer.render();

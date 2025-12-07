@@ -14,8 +14,13 @@ export const settings = {
     accentColor: new THREE.Color(0xec7bf4).convertLinearToSRGB()
   },
   gradient: {
-    opacity: 0.3,
     fromColor: new THREE.Color(0x515890).convertLinearToSRGB(),
     toColor: new THREE.Color(0x7589ea).convertLinearToSRGB()
+  },
+  cube: {
+    rotationForce: 0.5
+  },
+  animation: {
+    cubeRevealProgress: 1
   }
 };

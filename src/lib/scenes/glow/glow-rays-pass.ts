@@ -4,7 +4,8 @@ export const GlowRaysPass = {
   uniforms: {
     u_time: { value: 0.0 },
     u_texture: { value: null },
-    u_glow_texture: { value: null }
+    u_glow_texture: { value: null },
+    u_reveal_progress: { value: 0 }
   },
 
   vertexShader: /* glsl */ `
@@ -24,6 +25,7 @@ export const GlowRaysPass = {
               uniform float u_time;
               uniform sampler2D u_texture;
               uniform sampler2D u_glow_texture;
+              uniform float u_reveal_progress;
 
               float samples = 40.;
               float PI = 3.141592653589793238;
@@ -53,7 +55,8 @@ export const GlowRaysPass = {
                 factor += (0.4 * sin(vUv.x * 3.1));
                 afterGlow.rgb /= 30.;                
                 
-                tex += vec4(afterGlow, 1.) * factor;                
+                //tex = mix(tex, tex+ vec4(afterGlow, 1.) * factor, u_reveal_progress);
+                tex = mix(tex, tex+ vec4(afterGlow, 1.) * factor, u_reveal_progress);
                 
                 gl_FragColor = tex;              
               }          
