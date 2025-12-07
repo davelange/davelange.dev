@@ -9,11 +9,13 @@ export const settings = {
   particles: {
     count: 40,
     spread: 2,
-    baseSize: 50
+    baseSize: 50,
+    baseColor: new THREE.Color(0xb7caf5).convertLinearToSRGB(),
+    accentColor: new THREE.Color(0xec7bf4).convertLinearToSRGB()
+  },
+  gradient: {
+    opacity: 0.3,
+    fromColor: new THREE.Color(0x515890).convertLinearToSRGB(),
+    toColor: new THREE.Color(0x7589ea).convertLinearToSRGB()
   }
 };
-
-export const gradientColors = [
-  new THREE.Color(0x515890).convertLinearToSRGB(), // dark blue
-  new THREE.Color(0x8f75ea).convertLinearToSRGB() // dark purple
-];

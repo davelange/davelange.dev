@@ -1,14 +1,15 @@
+uniform float uTime;
+
 varying vec3 vColor;
 
-vec3 blue = vec3(0.39, 0.39, 0.99);
-
 void main() {
-// Light point
-    float strength = distance(gl_PointCoord, vec2(0.5));
-    strength = 1.0 - strength;
+    float distToCenter = distance(gl_PointCoord, vec2(0.5));
+    float strength = 1.0 - distToCenter;
     strength = pow(strength, 20.0);
 
-    gl_FragColor = vec4(vColor, strength);
+    float alpha = strength * (sin(uTime + (vColor.r * 20.)) + 0.1);
+
+    gl_FragColor = vec4(vColor, alpha);
 
     #include <colorspace_fragment>
 }

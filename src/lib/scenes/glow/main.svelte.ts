@@ -24,7 +24,7 @@ import particleFragment from "./particles/fragment.glsl?raw";
 import { loadTexture } from "../lake/utils";
 import { FXAAPass } from "three/examples/jsm/postprocessing/FXAAPass.js";
 import { MouseTracker } from "./mouse-tracker";
-import { gradientColors, settings } from "./settings";
+import { settings } from "./settings";
 
 export class GlowScene {
   scene = new THREE.Scene();
@@ -66,8 +66,8 @@ export class GlowScene {
     duration: 1500,
     easing: expoOut
   });
-  gradientColorTween = new Tween(gradientColors[0], {
-    duration: 2000,
+  gradientColorTween = new Tween(this.settings.gradient.fromColor, {
+    duration: 4000,
     easing: circInOut
   });
 
@@ -310,6 +310,7 @@ export class GlowScene {
   handleParticlesUpdate() {
     this.particles.clear();
     this.preScene.remove(this.particles);
+    this.gui.folders.find((f) => f._title === "Particles")?.destroy();
     this.addParticles();
   }
 
@@ -331,6 +332,12 @@ export class GlowScene {
       .min(0)
       .max(100)
       .onFinishChange(this.handleParticlesUpdate.bind(this));
+    folder
+      .addColor(this.settings.particles, "baseColor")
+      .onFinishChange(this.handleParticlesUpdate.bind(this));
+    folder
+      .addColor(this.settings.particles, "accentColor")
+      .onFinishChange(this.handleParticlesUpdate.bind(this));
 
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(
@@ -340,8 +347,6 @@ export class GlowScene {
     const colors = new Float32Array(
       this.settings.particles.count * 3
     );
-    const color = new THREE.Color(0x6363fc);
-    const colorVariation = new THREE.Color(0x7563fd);
 
     for (let i = 0; i <= this.settings.particles.count * 3; i++) {
       const idx = i * 3;
@@ -354,9 +359,9 @@ export class GlowScene {
 
       scales[i] = Math.random() * 2;
 
-      const colorPoint = color
+      const colorPoint = this.settings.particles.baseColor
         .clone()
-        .lerp(colorVariation, Math.random());
+        .lerp(this.settings.particles.accentColor, Math.random());
       colors[idx] = colorPoint.r;
       colors[idx + 1] = colorPoint.g;
       colors[idx + 2] = colorPoint.b;
@@ -422,8 +427,12 @@ export class GlowScene {
   });
 
   updateGradientColor(nextColorIdx = 1) {
+    const keys = ["toColor", "fromColor"] as const;
+    const nextKey: (typeof keys)[number] =
+      keys[nextColorIdx % keys.length];
+
     this.gradientColorTween
-      .set(gradientColors[nextColorIdx % gradientColors.length])
+      .set(this.settings.gradient[nextKey])
       .then(() => {
         this.updateGradientColor(nextColorIdx + 1);
       });
@@ -431,7 +440,7 @@ export class GlowScene {
 
   addGradientBg() {
     const material = new THREE.SpriteMaterial({
-      color: 0x515890,
+      color: this.settings.gradient.fromColor,
       fog: true,
       map: loadTexture("/assets/glow/grad.png"),
       transparent: true,
@@ -440,14 +449,12 @@ export class GlowScene {
 
     const folder = this.gui.addFolder("Gradient");
     folder.add(material, "opacity", 0, 1, 0.01);
-    folder
-      .addColor({ color: material.color.getHex() }, "color")
-      .onChange((value: number) => {
-        material.color.setHex(value);
-      });
+    folder.addColor(this.settings.gradient, "fromColor");
+    folder.addColor(this.settings.gradient, "toColor");
 
     this.gradient = new THREE.Sprite(material);
     this.gradient.scale.set(8, 8, 1);
+
     this.preScene.add(this.gradient);
     this.updateGradientColor();
   }
@@ -472,12 +479,6 @@ export class GlowScene {
 
     // Particles uniforms
     this.particles.material.uniforms.uTime.value = elapsedTime;
-    if (!this.cubeRestingRotationEnabled) {
-      this.particles.material.uniforms.uMouseForce.value =
-        this.cubeRotationTween.current[1] / 100;
-    } else {
-      this.particles.material.uniforms.uMouseForce.value = 0;
-    }
 
     //Gradient
     this.gradient.material.color.set(this.gradientColorTween.current);

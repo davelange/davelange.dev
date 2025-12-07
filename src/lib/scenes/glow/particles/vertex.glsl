@@ -1,6 +1,5 @@
 uniform float uSize;
 uniform float uTime;
-uniform float uMouseForce;
 
 attribute float aScale;
 attribute vec3 aColor;
@@ -10,7 +9,7 @@ varying vec3 vColor;
 void main() {
     vec4 modelPosition = modelMatrix * vec4(position, 1.0);
 
-    modelPosition.y += sin((uTime + modelPosition.z) * 0.6 * (modelPosition.y * 0.5)) * 0.1;
+    modelPosition.y += sin((uTime + modelPosition.z) * 0.6 * (modelPosition.y * 0.5)) * 0.2;
 
     vec4 viewPosition = viewMatrix * modelPosition;
     vec4 projectedPosition = projectionMatrix * viewPosition;
