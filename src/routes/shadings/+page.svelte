@@ -25,7 +25,7 @@
     {/snippet}
 
     {#snippet mainSlot()}
-      <a href={resolve("/shadings/lakes")}>Lakes</a>
+      <a href={resolve("/shadings/lakes")}>Lakes</a><br />
       <a href={resolve("/shadings/glow")}>Glow</a>
     {/snippet}
   </ListingLayout>

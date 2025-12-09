@@ -459,13 +459,14 @@ export class GlowScene {
       fog: true,
       map: loadTexture("/assets/glow/grad.png"),
       transparent: true,
-      opacity: 0.18
+      opacity: this.settings.gradient.opacity
     });
 
     const folder = this.gui.addFolder("Gradient");
     folder.add(material, "opacity", 0, 1, 0.01);
     folder.addColor(this.settings.gradient, "fromColor");
     folder.addColor(this.settings.gradient, "toColor");
+    folder.add(this.settings.gradient, "opacity", 0, 1, 0.01);
 
     this.gradient = new THREE.Sprite(material);
     this.gradient.scale.set(8, 8, 1);

@@ -14,6 +14,7 @@ export const settings = {
     accentColor: new THREE.Color(0xec7bf4).convertLinearToSRGB()
   },
   gradient: {
+    opacity: 0.1,
     fromColor: new THREE.Color(0x515890).convertLinearToSRGB(),
     toColor: new THREE.Color(0x7589ea).convertLinearToSRGB()
   },
