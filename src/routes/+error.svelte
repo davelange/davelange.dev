@@ -1,8 +1,9 @@
 <script lang="ts">
   import ListingLayout from "$lib/components/ListingLayout.svelte";
   import MainLayout from "$lib/components/MainLayout.svelte";
-  import Header from "$lib/components/Header.svelte";
   import { page } from "$app/state";
+  import SidebarHeader from "$lib/components/SidebarHeader.svelte";
+  import Sidebar from "$lib/components/Sidebar.svelte";
 </script>
 
 <svelte:head>
@@ -12,7 +13,11 @@
 
 <MainLayout>
   {#snippet sidebarSlot()}
-    <Header />
+    <Sidebar>
+      {#snippet topSlot()}
+        <SidebarHeader />
+      {/snippet}
+    </Sidebar>
   {/snippet}
 
   <ListingLayout>

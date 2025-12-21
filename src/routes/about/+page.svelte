@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Header from "$lib/components/Header.svelte";
   import MainLayout from "$lib/components/MainLayout.svelte";
-
   import image from "$lib/assets/about.png";
   import norbie from "$lib/assets/norbie.webp";
+  import Sidebar from "$lib/components/Sidebar.svelte";
+  import SidebarHeader from "$lib/components/SidebarHeader.svelte";
 </script>
 
 <svelte:head>
@@ -11,7 +11,11 @@
 </svelte:head>
 <MainLayout>
   {#snippet sidebarSlot()}
-    <Header />
+    <Sidebar>
+      {#snippet topSlot()}
+        <SidebarHeader />
+      {/snippet}
+    </Sidebar>
   {/snippet}
 
   <div class="wrapper body">

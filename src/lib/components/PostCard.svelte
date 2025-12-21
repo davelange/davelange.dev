@@ -53,7 +53,7 @@
   }
 
   .icon {
-    translate: 0 3px;
+    translate: 0 6px;
     transition: translate 0.2s linear;
   }
 
@@ -62,7 +62,7 @@
     outline: none;
 
     & .icon {
-      translate: 2px 3px;
+      translate: 2px 6px;
     }
 
     .title {
@@ -78,7 +78,7 @@
   }
 
   .title {
-    font-size: var(--16px);
+    font-size: var(--18px);
     font-weight: var(--font-bold);
   }
 

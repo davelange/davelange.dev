@@ -61,6 +61,7 @@
 </script>
 
 <div class="nav">
+  <p>Chapters</p>
   <ul>
     {#each headings as heading (heading.title)}
       <li

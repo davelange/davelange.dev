@@ -5,16 +5,16 @@
 
   let pages = [
     {
-      label: "Things with shaders",
-      href: "/shadings"
-    },
-    {
       label: "Blog",
       href: "/blog"
     },
     {
       label: "About",
       href: "/about"
+    },
+    {
+      label: "Fun with shaders",
+      href: "/shadings"
     }
   ] as const;
 </script>
@@ -23,7 +23,7 @@
   {#each pages as link (link.href)}
     <a
       href={resolve(link.href)}
-      class:active={link.href === page.url.pathname}
+      class:active={page.url.pathname.includes(link.href)}
     >
       {link.label}
     </a>
@@ -40,7 +40,6 @@
       flex-direction: column;
       gap: var(--8px);
       align-items: flex-start;
-      margin-top: auto;
     }
 
     a {

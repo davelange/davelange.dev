@@ -22,10 +22,13 @@
       label: "Blog",
       href: "/blog"
     },
-
     {
       label: "About",
       href: "/about"
+    },
+    {
+      label: "Fun with shaders",
+      href: "/shadings"
     }
   ] as const;
 
@@ -94,6 +97,15 @@
 </dialog>
 
 <style>
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   dialog {
     max-width: unset;
     max-height: unset;
@@ -102,15 +114,22 @@
     padding: 0;
     background: transparent;
     border: 0;
+    opacity: 0;
 
     &::backdrop {
       background-color: rgba(0, 0, 0, 0.5);
+      animation: fade-in 130ms forwards ease;
+    }
+
+    &[open] {
+      animation: fade-in 130ms forwards ease;
     }
 
     .content {
       color: var(--fg-neutral-default);
       background: var(--bg-neutral-default);
-      padding: var(--16px) var(--20px) var(--36px);
+      padding: 0 var(--20px) var(--36px);
+      border-radius: 0 0 var(--8px) var(--8px);
     }
 
     nav {

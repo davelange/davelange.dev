@@ -6,7 +6,8 @@
   import PostCardList from "$lib/components/PostCardList.svelte";
   import ListingHeader from "$lib/components/ListingHeader.svelte";
   import MainLayout from "$lib/components/MainLayout.svelte";
-  import Header from "$lib/components/Header.svelte";
+  import Sidebar from "$lib/components/Sidebar.svelte";
+  import SidebarHeader from "$lib/components/SidebarHeader.svelte";
 
   let { data }: { data: PageData } = $props();
 </script>
@@ -22,8 +23,11 @@
 
 <MainLayout>
   {#snippet sidebarSlot()}
-    <Header>
-      {#snippet contentSlot()}
+    <Sidebar>
+      {#snippet topSlot()}
+        <SidebarHeader />
+      {/snippet}
+      {#snippet bottomSlot()}
         <div class="mobile-hide">
           <CategoryNav
             categories={data.tags}
@@ -31,7 +35,7 @@
           />
         </div>
       {/snippet}
-    </Header>
+    </Sidebar>
   {/snippet}
 
   <ListingLayout>

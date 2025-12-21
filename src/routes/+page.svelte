@@ -1,15 +1,15 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import Header from "$lib/components/Header.svelte";
   import HomeScene from "$lib/components/HomeScene.svelte";
   import PostCardList from "$lib/components/PostCardList.svelte";
   import HeaderNav from "$lib/components/HeaderNav.svelte";
+  import SidebarHeader from "$lib/components/SidebarHeader.svelte";
 
   let { data }: { data: PageData } = $props();
 </script>
 
 <div class="landing-wrapper">
-  <Header isDiscreet />
+  <SidebarHeader hideNav />
   <div class="content">
     <p class="greeting">
       I'm a software developer. I help turn ideas into meaningful
@@ -59,7 +59,7 @@
       font-size: var(--24px);
       margin: var(--36px) 0 var(--24px);
       max-width: 400px;
-      text-wrap: pretty;
+      text-wrap: balance;
       color: var(--fg-brand-strong);
 
       @media (min-width: 768px) {
@@ -69,7 +69,7 @@
     }
 
     .post-list {
-      margin-bottom: var(--16px);
+      margin-bottom: var(--32px);
     }
   }
 

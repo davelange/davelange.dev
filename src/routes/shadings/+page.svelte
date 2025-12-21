@@ -3,7 +3,8 @@
   import ListingLayout from "$lib/components/ListingLayout.svelte";
   import ListingHeader from "$lib/components/ListingHeader.svelte";
   import MainLayout from "$lib/components/MainLayout.svelte";
-  import Header from "$lib/components/Header.svelte";
+  import Sidebar from "$lib/components/Sidebar.svelte";
+  import SidebarHeader from "$lib/components/SidebarHeader.svelte";
 </script>
 
 <svelte:head>
@@ -16,7 +17,11 @@
 
 <MainLayout>
   {#snippet sidebarSlot()}
-    <Header />
+    <Sidebar>
+      {#snippet topSlot()}
+        <SidebarHeader />
+      {/snippet}
+    </Sidebar>
   {/snippet}
 
   <ListingLayout>

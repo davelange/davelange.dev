@@ -4,7 +4,8 @@
   import ListingLayout from "$lib/components/ListingLayout.svelte";
   import Toc from "$lib/components/Toc.svelte";
   import MainLayout from "$lib/components/MainLayout.svelte";
-  import Header from "$lib/components/Header.svelte";
+  import Sidebar from "$lib/components/Sidebar.svelte";
+  import SidebarHeader from "$lib/components/SidebarHeader.svelte";
 
   let { data }: { data: PageData } = $props();
 </script>
@@ -16,13 +17,16 @@
 
 <MainLayout>
   {#snippet sidebarSlot()}
-    <Header>
-      {#snippet contentSlot()}
+    <Sidebar>
+      {#snippet topSlot()}
+        <SidebarHeader />
+      {/snippet}
+      {#snippet bottomSlot()}
         <div class="mobile-hide">
           <Toc headings={data.meta.headings} slug={data.slug} />
         </div>
       {/snippet}
-    </Header>
+    </Sidebar>
   {/snippet}
 
   <ListingLayout>

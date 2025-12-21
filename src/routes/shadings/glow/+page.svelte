@@ -1,8 +1,9 @@
 <script lang="ts">
   import MainLayout from "$lib/components/MainLayout.svelte";
-  import Header from "$lib/components/Header.svelte";
   import { onMount } from "svelte";
   import { createScene } from "$lib/scenes/glow/main.svelte";
+  import Sidebar from "$lib/components/Sidebar.svelte";
+  import SidebarHeader from "$lib/components/SidebarHeader.svelte";
 
   createScene({
     onMount,
@@ -20,7 +21,11 @@
 
 <MainLayout>
   {#snippet sidebarSlot()}
-    <Header />
+    <Sidebar>
+      {#snippet topSlot()}
+        <SidebarHeader />
+      {/snippet}
+    </Sidebar>
   {/snippet}
 
   <div class="wrapper">
