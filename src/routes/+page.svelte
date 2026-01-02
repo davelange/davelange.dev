@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { PageData } from "./$types";
+  import { resolve } from "$app/paths";
   import HomeScene from "$lib/components/HomeScene.svelte";
   import PostCardList from "$lib/components/PostCardList.svelte";
   import HeaderNav from "$lib/components/HeaderNav.svelte";
@@ -17,6 +18,7 @@
     </p>
     <div class="post-list">
       <PostCardList posts={data.posts} showTags={false} />
+      <a href={resolve("/blog")} class="read-more">Read more</a>
     </div>
     <HeaderNav />
   </div>
@@ -70,6 +72,22 @@
 
     .post-list {
       margin-bottom: var(--32px);
+      flex: 1 0 auto;
+    }
+
+    .read-more {
+      margin: var(--16px) 0;
+      display: inline-block;
+      text-decoration: none;
+
+      &:focus-visible {
+        outline-color: var(--fg-brand-strong);
+      }
+
+      &:hover,
+      &:focus-visible {
+        color: var(--fg-brand-strong);
+      }
     }
   }
 

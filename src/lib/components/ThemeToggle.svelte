@@ -64,8 +64,8 @@
     background: none;
     cursor: pointer;
 
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     translate: 0 1px;
 
     &:focus-visible {

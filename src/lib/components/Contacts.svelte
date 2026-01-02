@@ -104,7 +104,14 @@
   }
 
   a:hover,
-  a:focus {
+  a:focus,
+  a:focus-visible {
+    color: var(--fg-brand-strong);
+  }
+
+  button:hover,
+  button:focus,
+  button:focus-visible {
     color: var(--fg-brand-strong);
   }
 
