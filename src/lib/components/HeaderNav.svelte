@@ -4,10 +4,10 @@
   import Contacts from "./Contacts.svelte";
 
   let pages = [
-    /* {
+    {
       label: "Blog",
       href: "/blog"
-    }, */
+    },
     {
       label: "About",
       href: "/about"
