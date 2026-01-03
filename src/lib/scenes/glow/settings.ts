@@ -2,12 +2,12 @@ import * as THREE from "three";
 
 export const settings = {
   shader: {
-    waveScale: 1.4,
-    stepLo: 0.13,
-    stepHi: 0.68
+    waveScale: 2.3,
+    stepLo: 0.16,
+    stepHi: 0.52
   },
   particles: {
-    count: 40,
+    count: 70,
     spread: 2,
     baseSize: 50,
     baseColor: new THREE.Color(0xb7caf5).convertLinearToSRGB(),

@@ -1,14 +1,41 @@
 <script lang="ts">
+  import ArrowRightIcon from "~icons/feather/arrow-right";
   import SettingsIcon from "~icons/feather/settings";
   import Icon from "$lib/components/Icon.svelte";
+  import type { Snippet } from "svelte";
 
-  let { children } = $props();
+  let {
+    children,
+    sceneName,
+    nextScene
+  }: {
+    children: Snippet;
+    sceneName: string;
+    nextScene: () => void;
+  } = $props();
 </script>
 
 <div class="wrapper">
   {@render children?.()}
 
-  <button class="edit-button" data-js="edit-button">
+  <div class="btn next-scene">
+    <div>
+      <strong>
+        {sceneName} /
+      </strong>
+    </div>
+
+    <button type="button" onclick={nextScene}>
+      <span> View next scene </span>
+      <Icon
+        icon={ArrowRightIcon}
+        size="var(--20px)"
+        color="var(--fg-neutral-mild)"
+      />
+    </button>
+  </div>
+
+  <button class="btn edit" data-js="edit-button">
     <Icon
       icon={SettingsIcon}
       size="var(--20px)"
@@ -45,28 +72,40 @@
 
     animation: fadeOut 0.7s ease-in forwards;
 
-    .edit-button {
-      opacity: 0;
-      position: absolute;
-      z-index: 1;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      background: var(--bg-neutral-default);
-      color: var(--fg-neutral-default);
-      border: none;
-      padding: 0.5rem;
-      border-radius: 0.5rem;
-      cursor: pointer;
-      font-family: var(--font-mono);
-      font-size: var(--14px);
-      transition: opacity 0.2s ease-in-out;
-    }
-
     &:hover {
-      .edit-button {
+      .btn {
         opacity: 1;
         z-index: 10;
       }
+    }
+  }
+
+  .btn {
+    opacity: 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 1.5rem;
+    background: var(--bg-neutral-default);
+    color: var(--fg-neutral-default);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: var(--14px);
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .btn.edit {
+    right: 1.5rem;
+  }
+
+  .btn.next-scene {
+    display: flex;
+    gap: var(--8px);
+    left: 1.5rem;
+
+    button {
+      display: flex;
+      gap: var(--8px);
     }
   }
 </style>

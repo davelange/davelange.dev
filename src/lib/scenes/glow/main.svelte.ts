@@ -19,6 +19,7 @@ import { loadTexture } from "../lake/utils";
 import { FXAAPass } from "three/examples/jsm/postprocessing/FXAAPass.js";
 import { MouseTracker } from "./mouse-tracker";
 import { settings } from "./settings";
+
 export class GlowScene {
   scene = new THREE.Scene();
   composer!: EffectComposer;
@@ -52,7 +53,6 @@ export class GlowScene {
     THREE.BufferGeometry,
     THREE.ShaderMaterial
   >;
-  gradient!: THREE.Sprite;
 
   // Tweens
   cubeRotationTween = new Tween([0, 0], {
@@ -62,10 +62,6 @@ export class GlowScene {
   cubePositionTween = new Tween([0, 0], {
     duration: 1500,
     easing: expoOut
-  });
-  gradientColorTween = new Tween(this.settings.gradient.fromColor, {
-    duration: 4000,
-    easing: circInOut
   });
 
   constructor() {
@@ -424,7 +420,7 @@ export class GlowScene {
   }
 
   addObjects() {
-    this.addGradientBg();
+    //this.addGradientBg();
     this.addGlowPlane();
     this.addCube();
     this.addLights();
@@ -440,40 +436,6 @@ export class GlowScene {
     },
     gui: this.gui
   });
-
-  updateGradientColor(nextColorIdx = 1) {
-    const keys = ["toColor", "fromColor"] as const;
-    const nextKey: (typeof keys)[number] =
-      keys[nextColorIdx % keys.length];
-
-    this.gradientColorTween
-      .set(this.settings.gradient[nextKey])
-      .then(() => {
-        this.updateGradientColor(nextColorIdx + 1);
-      });
-  }
-
-  addGradientBg() {
-    const material = new THREE.SpriteMaterial({
-      color: this.settings.gradient.fromColor,
-      fog: true,
-      map: loadTexture("/assets/glow/grad.png"),
-      transparent: true,
-      opacity: this.settings.gradient.opacity
-    });
-
-    const folder = this.gui.addFolder("Gradient");
-    folder.add(material, "opacity", 0, 1, 0.01);
-    folder.addColor(this.settings.gradient, "fromColor");
-    folder.addColor(this.settings.gradient, "toColor");
-    folder.add(this.settings.gradient, "opacity", 0, 1, 0.01);
-
-    this.gradient = new THREE.Sprite(material);
-    this.gradient.scale.set(8, 8, 1);
-
-    this.preScene.add(this.gradient);
-    this.updateGradientColor();
-  }
 
   render() {
     if (!this.state.enabled) return;
@@ -495,9 +457,6 @@ export class GlowScene {
 
     // Particles uniforms
     this.particles.material.uniforms.uTime.value = elapsedTime;
-
-    //Gradient
-    this.gradient.material.color.set(this.gradientColorTween.current);
 
     this.renderer.setRenderTarget(this.glowTexture);
     this.cube.visible = false;
