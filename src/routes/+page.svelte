@@ -1,10 +1,10 @@
 <script lang="ts">
   import type { PageData } from "./$types";
   import { resolve } from "$app/paths";
-  import HomeScene from "$lib/components/HomeScene.svelte";
   import PostCardList from "$lib/components/PostCardList.svelte";
   import HeaderNav from "$lib/components/HeaderNav.svelte";
   import SidebarHeader from "$lib/components/SidebarHeader.svelte";
+  import SceneWrapper from "$lib/scenes/SceneWrapper.svelte";
 
   let { data }: { data: PageData } = $props();
 </script>
@@ -24,7 +24,7 @@
   </div>
 
   <div class="scene-wrapper">
-    <HomeScene />
+    <SceneWrapper initialScene="lakes" showAbout />
   </div>
 </div>
 

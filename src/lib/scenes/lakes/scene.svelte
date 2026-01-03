@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { text } from "$lib/scenes/lake/config";
+  import { text } from "$lib/scenes/lakes/config";
   import { onMount } from "svelte";
-  import { createScene } from "$lib/scenes/lake/main.svelte";
+  import { createScene } from "$lib/scenes/lakes/main.svelte";
 
   createScene({
     onMount
@@ -52,8 +52,10 @@
   }
 
   .scene-content {
+    position: relative;
     margin: auto;
     width: fit-content;
+    max-width: 600px;
     text-wrap: balance;
     color: #ffffff;
     z-index: 2;

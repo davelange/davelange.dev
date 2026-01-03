@@ -1,13 +1,20 @@
 <script lang="ts">
+  import { page } from "$app/state";
   import MainLayout from "$lib/components/MainLayout.svelte";
-  import GlowScene from "$lib/scenes/glow/scene.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import SidebarHeader from "$lib/components/SidebarHeader.svelte";
+  import { getSceneById, type SceneId } from "$lib/scenes";
   import SceneWrapper from "$lib/scenes/SceneWrapper.svelte";
+
+  let { children } = $props();
+
+  let currentScene = $derived(
+    getSceneById(page.params.slug || "lakes")
+  );
 </script>
 
 <svelte:head>
-  <title>Glow | Dave Lange</title>
+  <title>{currentScene?.name} | Dave Lange</title>
   <meta
     name="description"
     content="Experiments with shaders and all that"
@@ -23,7 +30,11 @@
     </Sidebar>
   {/snippet}
 
-  <SceneWrapper>
-    <GlowScene />
-  </SceneWrapper>
+  {#if currentScene}
+    <SceneWrapper
+      initialScene={currentScene.id as SceneId}
+      withRouting
+    />
+  {/if}
+  {@render children()}
 </MainLayout>

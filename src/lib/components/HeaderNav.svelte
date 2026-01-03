@@ -14,7 +14,7 @@
     },
     {
       label: "Fun with shaders",
-      href: "/shadings"
+      href: "/shadings/lakes"
     }
   ] as const;
 </script>

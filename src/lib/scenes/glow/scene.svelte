@@ -3,8 +3,7 @@
   import { createScene } from "$lib/scenes/glow/main.svelte";
 
   createScene({
-    onMount,
-    showGui: false
+    onMount
   });
 </script>
 

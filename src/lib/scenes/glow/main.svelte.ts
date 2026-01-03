@@ -9,13 +9,13 @@ import {
 import GUI from "lil-gui";
 import { GlowRaysPass } from "./glow-rays-pass";
 import { Tween } from "svelte/motion";
-import { circInOut, expoOut } from "svelte/easing";
+import { expoOut } from "svelte/easing";
 import { themeManager } from "$lib/theme.svelte";
 import vertex from "./glow-plane/vertex.glsl?raw";
 import fragment from "./glow-plane/fragment.glsl?raw";
 import particleVertex from "./particles/vertex.glsl?raw";
 import particleFragment from "./particles/fragment.glsl?raw";
-import { loadTexture } from "../lake/utils";
+import { loadTexture } from "../lakes/utils";
 import { FXAAPass } from "three/examples/jsm/postprocessing/FXAAPass.js";
 import { MouseTracker } from "./mouse-tracker";
 import { settings } from "./settings";
@@ -160,6 +160,8 @@ export class GlowScene {
     shaderFolder.add(this.settings.shader, "waveScale", 0, 10, 0.01);
     shaderFolder.add(this.settings.shader, "stepLo", 0, 1, 0.01);
     shaderFolder.add(this.settings.shader, "stepHi", 0, 1, 0.01);
+
+    this.gui.hide();
   }
 
   initPost() {
