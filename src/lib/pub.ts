@@ -25,7 +25,6 @@ export function createPubSub<TEvent extends string>(
   };
 
   const off = (id: string) => {
-    console.log("cleanup", id);
     events.forEach((evt) => {
       subs[evt] = subs[evt].filter((sub) => sub.id !== id);
     });

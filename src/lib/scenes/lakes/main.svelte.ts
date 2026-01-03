@@ -4,7 +4,7 @@ import {
   ShaderPass
 } from "three/examples/jsm/Addons.js";
 import GUI from "lil-gui";
-import { loadTexture, rand, wait } from "./utils";
+import { loadTexture, rand } from "./utils";
 import { colorsDark, colorsLight, lakeConfigs, text } from "./config";
 import { RippleManager } from "./ripple";
 import { LakePass } from "./lakePass";
@@ -84,7 +84,6 @@ export class HomeScene {
   prevMouse = new THREE.Vector2(0, 0);
 
   constructor() {
-    console.log("init scene");
     this.canvas = document.querySelector(
       "canvas.webgl"
     ) as HTMLCanvasElement;
@@ -158,8 +157,7 @@ export class HomeScene {
       this.initUpdateLakes();
       this.updateColorSettings();
     });
-    const id = themeManager.on("themeChange", (theme) => {
-      console.log("themeChange in scene", theme);
+    themeManager.on("themeChange", (theme) => {
       this.colorConfig = theme === "dark" ? colorsDark : colorsLight;
       this.updateColorSettings();
     });
