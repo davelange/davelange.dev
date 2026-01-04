@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { createScene } from "$lib/scenes/glow/main.svelte";
+  import { createScene } from "./main.svelte";
   import type { SceneButtonSlot } from "../index.svelte";
 
   let {
@@ -16,7 +16,6 @@
 
 <div class="scene-overlay"></div>
 <canvas class="webgl"> </canvas>
-
 {@render sceneButtonSlot?.({
   onClick: () => scene?.toggleEditScene()
 })}

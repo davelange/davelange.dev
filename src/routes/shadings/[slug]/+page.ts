@@ -1,4 +1,4 @@
-import { getSceneById } from "$lib/scenes";
+import { getSceneById } from "$lib/scenes/index.svelte";
 import type { PageLoad } from "./$types";
 
 export const load: PageLoad = async ({ params }) => {

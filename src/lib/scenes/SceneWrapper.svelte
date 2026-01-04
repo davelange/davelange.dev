@@ -5,7 +5,8 @@
   import type { Component } from "svelte";
   import { goto } from "$app/navigation";
   import { resolve } from "$app/paths";
-  import { scenes, type SceneId } from ".";
+  import { scenes, type SceneId } from "./index.svelte";
+  import type { HTMLButtonAttributes } from "svelte/elements";
 
   let {
     initialScene,
@@ -43,9 +44,19 @@
   }
 </script>
 
+{#snippet sceneButtonSlot({
+  onClick
+}: {
+  onClick: HTMLButtonAttributes["onclick"];
+})}
+  <button class="btn edit" data-js="edit-button" onclick={onClick}>
+    <Icon icon={SettingsIcon} size="var(--20px)" />
+  </button>
+{/snippet}
+
 <div class="wrapper">
   {#await RenderedComponent then Scene}
-    <Scene />
+    <Scene {sceneButtonSlot} />
   {/await}
 
   <div class="btn next-scene">
@@ -66,10 +77,6 @@
       <Icon icon={ArrowRightIcon} size="var(--20px)" />
     </button>
   </div>
-
-  <button class="btn edit" data-js="edit-button">
-    <Icon icon={SettingsIcon} size="var(--20px)" />
-  </button>
 </div>
 
 <style>

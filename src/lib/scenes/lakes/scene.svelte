@@ -2,8 +2,15 @@
   import { text } from "$lib/scenes/lakes/config";
   import { onMount } from "svelte";
   import { createScene } from "$lib/scenes/lakes/main.svelte";
+  import type { SceneButtonSlot } from "../index.svelte";
 
-  createScene({
+  let {
+    sceneButtonSlot
+  }: {
+    sceneButtonSlot?: SceneButtonSlot;
+  } = $props();
+
+  const scene = createScene({
     onMount
   });
 </script>
@@ -24,6 +31,10 @@
     {/each}
   </p>
 </div>
+
+{@render sceneButtonSlot?.({
+  onClick: () => scene?.toggleEditScene()
+})}
 
 <style>
   @keyframes fadeOut {

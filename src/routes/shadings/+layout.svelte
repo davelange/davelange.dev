@@ -3,7 +3,10 @@
   import MainLayout from "$lib/components/MainLayout.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import SidebarHeader from "$lib/components/SidebarHeader.svelte";
-  import { getSceneById, type SceneId } from "$lib/scenes";
+  import {
+    getSceneById,
+    type SceneId
+  } from "$lib/scenes/index.svelte";
   import SceneWrapper from "$lib/scenes/SceneWrapper.svelte";
 
   let { children } = $props();

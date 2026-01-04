@@ -19,16 +19,17 @@ import { loadTexture } from "../lakes/utils";
 import { FXAAPass } from "three/examples/jsm/postprocessing/FXAAPass.js";
 import { MouseTracker } from "./mouse-tracker";
 import { settings } from "./settings";
+import { createSceneFactory } from "../index.svelte";
 
 export class GlowScene {
   scene = new THREE.Scene();
   composer!: EffectComposer;
   shaderPass!: ShaderPass;
   renderer = new THREE.WebGLRenderer();
-  canvas: HTMLCanvasElement;
+  canvas!: HTMLCanvasElement;
   camera = new THREE.PerspectiveCamera();
   clock = new THREE.Clock();
-  controls: OrbitControls;
+  controls!: OrbitControls;
   gui = new GUI();
 
   width = 0;
@@ -42,7 +43,8 @@ export class GlowScene {
 
   // State
   state = {
-    enabled: true
+    enabled: true,
+    isEditing: false
   };
   settings = settings;
 
@@ -64,7 +66,7 @@ export class GlowScene {
     easing: expoOut
   });
 
-  constructor() {
+  init() {
     this.canvas = document.querySelector(
       "canvas.webgl"
     ) as HTMLCanvasElement;
@@ -429,6 +431,15 @@ export class GlowScene {
     this.addParticles();
   }
 
+  toggleEditScene() {
+    this.state.isEditing = !this.state.isEditing;
+    if (this.state.isEditing) {
+      this.gui.show();
+    } else {
+      this.gui.hide();
+    }
+  }
+
   mouseTracker = new MouseTracker({
     threshold: 30,
     window: 1200,
@@ -494,23 +505,6 @@ export class GlowScene {
   }
 }
 
-export function createScene({
-  onMount,
-  showGui
-}: {
-  onMount: (arg: () => void) => void;
-  showGui?: boolean;
-}) {
-  onMount(() => {
-    const scene = new GlowScene();
-    scene.render();
+const createScene = createSceneFactory(GlowScene);
 
-    if (showGui) {
-      scene.gui.show();
-    }
-
-    return () => {
-      scene.destroy();
-    };
-  });
-}
+export { createScene };

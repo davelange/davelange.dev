@@ -12,15 +12,16 @@ import { Tween } from "svelte/motion";
 import { cubicOut, expoInOut } from "svelte/easing";
 import { themeManager } from "$lib/theme.svelte";
 import { createPubSub } from "$lib/pub";
+import { createSceneFactory } from "../index.svelte";
 
 type Phase = keyof typeof colorsLight;
 
-export class HomeScene {
+export class LakesScene {
   scene = new THREE.Scene();
   composer!: EffectComposer;
   shaderPass!: ShaderPass;
   renderer = new THREE.WebGLRenderer();
-  canvas: HTMLCanvasElement;
+  canvas!: HTMLCanvasElement;
   camera = new THREE.OrthographicCamera();
   clock = new THREE.Clock();
   lakeConfig = lakeConfigs[0];
@@ -30,8 +31,8 @@ export class HomeScene {
   width = 0;
   height = 0;
 
-  greetingElement: Element;
-  subtitleElement: Element;
+  greetingElement!: Element;
+  subtitleElement!: Element;
 
   state = {
     enabled: true,
@@ -83,7 +84,7 @@ export class HomeScene {
   mouse = new THREE.Vector2(0, 0);
   prevMouse = new THREE.Vector2(0, 0);
 
-  constructor() {
+  init() {
     this.canvas = document.querySelector(
       "canvas.webgl"
     ) as HTMLCanvasElement;
@@ -161,12 +162,6 @@ export class HomeScene {
       this.colorConfig = theme === "dark" ? colorsDark : colorsLight;
       this.updateColorSettings();
     });
-
-    document
-      .querySelector('[data-js="edit-button"]')
-      ?.addEventListener("click", () => {
-        this.toggleEditScene();
-      });
   }
 
   updateColorSettings() {
@@ -484,23 +479,6 @@ export class HomeScene {
   }
 }
 
-export function createScene({
-  onMount,
-  showGui
-}: {
-  onMount: (arg: () => void) => void;
-  showGui?: boolean;
-}) {
-  onMount(() => {
-    const scene = new HomeScene();
-    scene.render();
+const createScene = createSceneFactory(LakesScene);
 
-    if (showGui) {
-      scene.gui.show();
-    }
-
-    return () => {
-      scene.destroy();
-    };
-  });
-}
+export { createScene };
