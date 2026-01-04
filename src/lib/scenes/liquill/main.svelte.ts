@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import {
   EffectComposer,
-  OrbitControls,
   RenderPass,
   ShaderPass
 } from "three/examples/jsm/Addons.js";
@@ -26,7 +25,6 @@ class LiquillScene {
   brushTexture = new THREE.WebGLRenderTarget();
 
   stats = new Stats();
-  controls = new OrbitControls(this.camera, this.canvas);
 
   state = {
     isEditing: false
@@ -55,7 +53,6 @@ class LiquillScene {
     this.setupRenderer();
     this.setupCamera();
     this.setupResize();
-    this.controls = new OrbitControls(this.camera, this.canvas);
     this.trackMouse();
     this.addObjects();
     this.initPost();
@@ -212,8 +209,8 @@ class LiquillScene {
 
   createRipple() {
     if (
-      Math.abs(this.mouse.x - this.prevMouse.x) < 2 &&
-      Math.abs(this.mouse.y - this.prevMouse.y) < 2
+      Math.abs(this.mouse.x - this.prevMouse.x) < 10 &&
+      Math.abs(this.mouse.y - this.prevMouse.y) < 10
     ) {
       return;
     }
@@ -238,8 +235,6 @@ class LiquillScene {
 
   render() {
     const elapsedTime = this.clock.getElapsedTime();
-
-    this.controls.update();
 
     this.updateRipples();
 

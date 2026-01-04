@@ -44,9 +44,10 @@ export class Ripple {
     if (this.mesh.material.opacity < 0.001) {
       this.mesh.visible = false;
     } else {
-      this.mesh.material.opacity *= 0.957;
+      this.mesh.material.opacity *= 0.97;
       this.mesh.scale.x = this.mesh.scale.x * 0.982 + 0.07;
       this.mesh.scale.y = this.mesh.scale.y * 0.982 + 0.07;
+      this.mesh.rotateZ(0.001);
     }
   }
 }

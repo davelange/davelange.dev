@@ -1,0 +1,71 @@
+---
+title: A sceneful of shaders
+publishedAt: 2026-01-04
+description: Building a scene (mostly) only using shaders.
+tags:
+  - creative coding
+---
+
+# A sceneful of shaders
+
+There are three main things going on here:
+ - The main scene
+ - The ripple effect on the stars
+ - The text 
+
+First though, what is this scene? I think the whole thing was inspired by the _Wood Between the Worlds_ 
+from The Magician's Nephew.
+
+> “No, I don’t believe this wood is a world at all. I think it’s just a sort of in-between place.”
+
+I've always found that idea of lakes which offer a way into another world quite appealing. 
+Anyway, onwards and upwards.
+
+## The main scene
+
+ This is a three.js scene, but it's pretty much all done in shader. At first I tried to achieve the 
+ sense of perspective by using an actual perspective camera and angling the camera and shader 
+ material correctly. But as it started getting tricky to get this right I thought, why not commit 
+ fully to the shader?
+
+ At first this felt a bit daunting, but was quite rewarding by the end. It was also a chance to use 
+ glsl structs for the first time. Each lake is defined by a struct:
+
+ ```glsl
+ struct Lake {
+    vec2 position;
+    float radius;
+};
+ ```
+
+With this it's pretty simple to render a circle in the given position and "squash" it a bit to convey 
+perspective. For the merging effect of lakes as they approach each other I must thank ChatGPT (yes, back 
+when I started on this copy pasting from ChatGPT was a normal workflow. Feels like years ago right?). 
+
+The lake positions and radii are animated for a short time, then we zoom in (ie: simply make the lakes 
+bigger until the occupy the whole scene), then swap to a new set of lake structs and colors, and zoom 
+out to the changed scene.
+
+At the moment the scene uses a fixed set of lake configs. This could well be generated randomly, but my 
+early experiments in this direction just didn't look very good consistently. I might get back to this 
+some day (either me or Claude that is).
+
+
+## Paper effect
+
+I've always had a soft spot for the "stop motion textured paper over video" effect. Not sure if it has
+a better name? I'm referring to [this](https://youtu.be/BnPx7fxG3x4?t=157). It's probably overused, but I
+still think it's great at conveying some impression of movement and physicality to a scene.
+
+To get that in this scene I'm simply using a small image of paper, applying a multiply blend mode, 
+and then rotating the image every second or so for movement. Pretty simple but I like the outcome.
+
+## Stars
+
+The stars "twinkling effect" basically reuses what I'd already done [here](/shadings/liquill-scene), using
+cos and sin transformations on a vector to create seemingly random areas, which I then use to hide the stars.
+The ripple effect is the same.
+
+## What about the text?
+
+It's regular old HTML and JS :) this is just a lot easier than dealing with text in a three.js scene.

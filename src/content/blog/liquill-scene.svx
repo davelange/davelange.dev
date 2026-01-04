@@ -1,0 +1,28 @@
+---
+title: Swirling shader scene
+publishedAt: 2026-01-04
+description: Creating a swirling liquid looking interactive scene with shaders.
+tags:
+  - creative coding
+---
+
+# Swirling liquid scene
+
+I wanted to create a swirling liquid scene you could interact with. It was eventually
+used on this [landing page](https://www.quill.finance).
+
+A lot of credit here has to go to the great [@akella_](https://www.youtube.com/@akella_), and if you want
+to learn more about shaders and three.js, you should check him out. 
+
+The crucial thing here is achieving the "waves" through a bunch of transformations of a vector. Because it's 
+based on sin and cos operations, it has this innate harmony to it.  
+
+The other cool thing going on is the ripple effect. Again I must thank @akella_, he does a great demonstration
+[here](https://www.youtube.com/watch?v=vWAci72MtME&t=2s) of the underlying technique:
+
+ - Create a "pre-render" scene and texture.
+ - Add the ripple image textures to this scene based on mouse movement.
+ - Render this pre-scene to a separate render target, which gets you a sort of combined composite image of n ripples.
+ - Pass this render into a post processing shader pass, where you can distort your existing shader scene
+ based on the ripples render.
+

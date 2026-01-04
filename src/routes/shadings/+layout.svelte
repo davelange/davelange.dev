@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import ListingLayout from "$lib/components/ListingLayout.svelte";
   import MainLayout from "$lib/components/MainLayout.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import SidebarHeader from "$lib/components/SidebarHeader.svelte";
@@ -39,5 +40,10 @@
       withRouting
     />
   {/if}
-  {@render children()}
+
+  <ListingLayout>
+    {#snippet mainSlot()}
+      {@render children()}
+    {/snippet}
+  </ListingLayout>
 </MainLayout>

@@ -200,6 +200,18 @@ button {
     margin: var(--24px) auto;
   }
 
+  blockquote {
+    border-left: 2px solid var(--fg-neutral-mild);
+    margin: 1rem 0;
+    padding: var(--8px) var(--20px);
+    border-radius: 0 var(--8px) var(--8px) 0;
+    font-style: italic;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
   [id] {
     position: relative;
 
