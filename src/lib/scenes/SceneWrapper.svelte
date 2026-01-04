@@ -98,8 +98,8 @@
     width: 100%;
     height: 100%;
 
-    max-width: 800px;
-    max-height: 800px;
+    max-width: 94vh;
+    max-height: 94vh;
 
     border-radius: 0.72rem;
     overflow: hidden;

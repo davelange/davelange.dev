@@ -333,10 +333,10 @@ export class LakesScene {
       this.settings.shader.u_bgColorSecondary
     );
     this.shaderPass.uniforms.u_starTexture = new THREE.Uniform(
-      loadTexture("/assets/stars6.png")
+      loadTexture("/assets/lakes/stars6.png")
     );
     this.shaderPass.uniforms.u_paperTexture = new THREE.Uniform(
-      loadTexture("/assets/paper2.png")
+      loadTexture("/assets/lakes/paper2.png")
     );
 
     this.composer.addPass(this.shaderPass);
@@ -426,7 +426,7 @@ export class LakesScene {
   addObjects() {
     this.rippleManager.init({
       count: 60,
-      texture: loadTexture("/assets/brush2.png"),
+      texture: loadTexture("/assets/lakes/brush2.png"),
       scene: this.preScene
     });
 
