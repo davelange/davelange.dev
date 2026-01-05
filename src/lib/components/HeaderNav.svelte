@@ -11,10 +11,6 @@
     {
       label: "About",
       href: "/about"
-    },
-    {
-      label: "Fun with shaders",
-      href: "/shadings/lakes"
     }
   ] as const;
 </script>

@@ -57,7 +57,7 @@ export class GlowScene {
   >;
 
   // Tweens
-  cubeRotationTween = new Tween([0, 0], {
+  cubeRotationTween = new Tween([0.1, 0.3], {
     duration: 1500,
     easing: expoOut
   });
@@ -77,13 +77,12 @@ export class GlowScene {
     this.setupResize();
     this.addObjects();
     this.initPost();
-    this.initSettings();
 
     this.controls = new OrbitControls(
       this.camera,
       this.renderer.domElement
     );
-    this.controls.update();
+    this.initSettings();
   }
 
   setupRenderer() {
@@ -162,6 +161,12 @@ export class GlowScene {
     shaderFolder.add(this.settings.shader, "waveScale", 0, 10, 0.01);
     shaderFolder.add(this.settings.shader, "stepLo", 0, 1, 0.01);
     shaderFolder.add(this.settings.shader, "stepHi", 0, 1, 0.01);
+
+    const controlsFolder = this.gui.addFolder("Controls");
+    this.controls.enabled = false;
+    controlsFolder
+      .add(this.controls, "enabled")
+      .name("Orbit Controls");
 
     this.gui.hide();
   }
@@ -424,7 +429,6 @@ export class GlowScene {
   }
 
   addObjects() {
-    //this.addGradientBg();
     this.addGlowPlane();
     this.addCube();
     this.addLights();

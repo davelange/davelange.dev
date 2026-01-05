@@ -10,10 +10,12 @@
 
   let {
     initialScene,
+    scene,
     withRouting,
     showAbout
   }: {
-    initialScene: SceneId;
+    initialScene?: SceneId;
+    scene?: SceneId;
     withRouting?: boolean;
     showAbout?: boolean;
   } = $props();
@@ -22,7 +24,11 @@
     scenes.findIndex((scene) => scene.id === initialScene)
   );
 
-  let currentScene = $derived(scenes[sceneIdx % scenes.length]);
+  let currentScene = $derived(
+    scene
+      ? scenes.find((s) => scene === s.id)!
+      : scenes[sceneIdx % scenes.length]
+  );
 
   let RenderedComponent = $derived.by<Promise<Component>>(
     async () => {

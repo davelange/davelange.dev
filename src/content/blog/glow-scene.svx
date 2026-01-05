@@ -1,0 +1,35 @@
+---
+title: Swirling shader scene
+publishedAt: 2026-01-05
+description: Glow through glass, using three.js MeshPhysicalMaterial and shaders
+tags:
+  - creative coding
+---
+
+# Glow
+
+Have you ever used three.js's MeshPhysicalMaterial? There's a great post about it [here](https://tympanus.net/codrops/2021/10/27/creating-the-effect-of-transparent-glass-and-plastic-in-three-js/).
+It allows us to easily create a glass-like material. When I saw this, I immediately wanted to try building
+something like what we have in this scene - a shimmering light source seen through a moving glass object.
+
+I quite like the result as it is, but the control MeshPhysicalMaterial provides over different properties 
+(thickness, reflectivity, transmission, etc.) means there's a lot we can do here.
+
+## The glowy thing
+
+Initially I tried using actual lights inside the cube. This proved to be quite tricky, so I went with
+a shortcut - just place the light source _behind_ the cube. And instead of just using a light, why not use a
+shader plane? This was more in line with what I had in mind - not so much a light but a pulsing glowy thing.
+You can see the shader plane by itself by toggling the cube visibility in the edit GUI. 
+
+## The light rays
+
+You may have noticed there are rays of light emitted by the shader glow. This is done in a post processing shader
+pass - it _could_ have been done in the same shader plane as the glow, but by applying it afterwards it is actually
+based on the refracted and "frosted" appearance of the glow as seen through glass. 
+
+## Particles
+
+There's not much else in the scene, just the particles floating around the cube. It's pretty simple and probably 
+something I'd like to improve at some point, but is enough for now.
+
