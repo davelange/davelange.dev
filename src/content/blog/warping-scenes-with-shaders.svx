@@ -1,0 +1,245 @@
+---
+title: Warping 3D scenes with shaders
+publishedAt: 2025-08-29
+description: Warping effects with post processing
+canonical: https://content.subvisual.com/warping-3d-scenes-with-shaders/
+tags:  
+  - creative coding
+---
+
+# Warping 3D scenes with shaders
+
+(Based on a talk I gave in Coimbra.js, called "Three.js, shaders and a chicken")
+
+Three.js allows us to create rich interactive 3D scenes for the web. Let's take a look at how we can make these scenes a little more interesting using shaders.
+
+
+## Very very brief intro to three.js
+
+But we should really start at the start - webgl and webgpu. These are the browser's native APIs for rendering high-performance interactive 3D and 2D graphics. They're pretty low level though, making them hard to use for more complex scenes. That's where Three.js steps in. It abstracts away a lot of the complexity and allows us to think in terms of actual scenes, cameras, lights, and objects.
+
+I won't go into much detail about Three.js, as there are a lot of resources out there to get started. However it's useful to go over the basic mental model of scene:
+
+![Screenshot 2025-07-22 at 16.06.25](https://hackmd.io/_uploads/H1AWFQaLgl.png)
+
+In short, our scene contains all actual objects in a tree-like structure. That scene, along with a camera, gets passed to a renderer. The renderer creates the scene render as seen through the given camera, and passes that to a "render target". 
+
+In most cases this target is a HTML canvas element, which we can then see on the page. We'll get back to this render target business later though.
+
+(Aside: you might be asking, why can't I just vibe code this? Well, you can. You can tab away to your heart's desire. But it might be useful to understand what's going on)
+
+## Adding something extra
+
+With the basics laid down, we can craft our scene, add objects, lights, models, physics engines, the works.
+
+As an example, I created this simple mini game: press space for the chicken to jump over the obstacles - if it it hits an obstacle, you have to start over. 
+
+![wobble2](https://hackmd.io/_uploads/HJFNp_CIlx.gif)
+
+Ok, using some models and a physics engine we can already achieve a pretty good scene. But what if we want the moment our chicken hits an obstacle a little more interesting? Say, with a wobbly effect like this:
+
+![wobble1](https://hackmd.io/_uploads/rybSpO0Leg.gif)
+
+So how can we create this effect in our scene? Three.js allows us to manipulate positions, rotations, scales, lighting and so on, but this is quite different. And that's where shaders come in.
+
+(the demo uses Threlte, a Svelte wrapper around Three.js. If you're familiar with React Three Fiber, it's the same but for Svelte. However, that's not too relevant here, and hopefully you can adapt this to whatever framework you use.)
+
+## A very very brief intro to shaders
+
+Shaders are a huge topic, so I'll keep to a very basic explanation here. A shader is basically a program that defines the how grapics are rendered, at a very low level. There are different types of shader, but I'll be focusing on the fragment shaders, which define the actual colors we will see. 
+
+We can use them in Three.js in several ways. The simplest is probably the `ShaderMaterial`.
+
+```js
+import fragmentShader from './fragmentShader.glsl?raw';
+import vertexShader from './vertexShader.glsl?raw';
+
+const shaderMaterial = new THREE.ShaderMaterial({
+    uniforms: {
+        uTime: { value: 0.0 } // Args for the shader
+    },
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader
+});
+
+const geometry = new THREE.PlaneGeometry(10, 10); // 10x10 plane
+const shaderMesh = new THREE.Mesh(geometry, shaderMaterial);
+scene.add(plane);
+```
+This would create a plane whose appearence will be defined in that fragment shader. A simple but effective way of thinking about this is that the fragment shader is a function that will run for every single point in that plane at the same time, and must return a color. And just like a function, it can receive arguments.
+
+For instance, the following fragment shader would simply create a solid blue plane:
+
+```glsl
+/* Position (x, y) of the pixel, 0 - 1, received from the vertex shader */
+varying vec2 vUv;
+
+vec4 blue = vec4(0., 0., 1., 1.); // Blue, in rgba format
+
+void main() {
+    gl_FragColor = color; // <- Final output
+}
+```
+
+And by using the `vUv` value we could achieve a gradient:
+
+```glsl
+vec4 color = blue;    
+// Increase the "green" channel of the color based on the Y position of each point
+color.g += vUv.y; 
+```
+
+Better, but still not very useful. Things get more interesting when we start passing in actual images:
+
+```glsl
+varying vec2 vUv;
+
+uniform sampler2D myImage; // <- this is an image
+
+void main() {
+    vec2 imagePointToUse = vUv;
+    vec4 imageTexture = texture2D(myImage, imagePointToUse);
+
+    gl_FragColor = imageTexture;
+}
+```
+Remember, the shader runs for each point of the plane, always receiving the entire image. So the shader must determine what specific point of the image it wants to render. If both the plane and the image are square we can use the `vUv` position directly, resulting in a 1 to 1 mapping between image and shader. This seems like a very overcomplicated and cumbersome way of displaying an image, because it is. But we can manipulate the point of the image our shader samples, and that's where it starts to make sense:
+
+```glsl
+imagePoint.x += sin(vUv.y * 10.) * 0.5;
+```
+
+Just adding this line will warp the image. Basically, for each point of the plane, we no longer render the corresponding point of the image, instead we shift it left and right based on the Y position of the shader. And that's the basis of the wobbly effect we want!
+
+This is a *very* simple example of a shader. Head over to https://www.shadertoy.com/ for some truly fantastic examples.
+
+## Back to our scene
+
+So how do we apply this in a complex scene with a bunch of objects, rather than just one material? Through postprocessing. 
+
+Going back to the Three.js basics, our `Renderer` usually targets a HTML Canvas element and renders directly to it, but postprocessing turns this process into a sort of pipeline of stages (called "passes") where we can insert our Wobbly shader pass. We could also insert other passes, such as antialiasing or color treatment. We create the pipeline with the `EffectComposer` class, which we then use to actually render the whole scene.
+
+Here's how we could do it:
+
+```js
+const composer = new EffectComposer(renderer);  
+
+// Add our wobbly shader 
+const pass = new ShaderPass(WobblePass);
+composer.addPass(pass);
+
+// Create a virtual render target
+const target = new THREE.WebGLRenderTarget(
+    width,
+    height
+);
+
+onEveryFrame((deltaTime) => {
+    // Create a render of our scene, pass it into the shader
+    renderer.setRenderTarget(target);
+    renderer.render(scene, camera.current);
+    pass.uniforms.uTexture.value = target.texture;
+
+    // Create visible render
+    composer.render(deltaTime);
+});
+
+```
+
+After setting up our `EffectComposer` and adding our shader pass, we create a new render target. You could think of this a virtual "invisible" render target. On every frame we render our regular Three.js scene onto it. This has no visible effect, but it means we can access our scene as a sort of static "image" through the `target.texture` property. We then pass this into our Wobbly shader pass, which works it's wobbly magic. Finally, we create the visible render of the processed scene by running `composer.render()`.
+
+In this way, the shader simply receives the entire scene as an image, not needing to know about lights, geometries, materials and all that, and warps it all uniformly.
+
+## Timing
+
+At this point, our shader would be warping our scene continuosly and with a fixed intensity. What we need now is to only see the warping when the collisions happen, lasting for a short time, and make it seem "springy". We can do this by simply passing an `intensity` uniform into our shader, which is initially 0. This means our shader is *always warping*, but most of the time the intensity of that warping is 0. Then when a collision happens, we set `intensity` value to something positive, making the effect visible. In the sample above, we would add
+
+```js
+pass.uniforms.uIntensity.value = intensity;
+```
+
+This updates the shader's intensity uniform on every frame. If we update `intensity` from 0 to 1, the warping effect will suddenly take full effect. So how do we make the effect springy? We simply animate the value over a certain number of frames, making the transition from "no warp" to "full warp" gradual. This is more easily done on the Javascript side than in the shader. In the demo I used Svelte's Spring class, but there are many other options out there:
+
+```js
+const wobbleIntensity = new Spring(0, {
+ stiffness: 0.3,
+ damping: 0.08
+});
+
+...
+
+// This gets triggered when the chicken collides
+this.wobbleEffectTimer.set(1);
+
+...
+
+onEveryFrame((deltaTime) => {
+    // Create a render of our scene, pass it into the shader
+    renderer.setRenderTarget(target);
+    renderer.render(scene, camera.current);
+    pass.uniforms.uTexture.value = target.texture;
+    pass.uniforms.uIntensity.value = intensity;
+
+    // Create visible render
+    composer.render(deltaTime);
+});
+
+```
+
+To use this in the shader, we simply need to account for the intensity control. The full shader looks something like this:
+
+```js
+export const WobblePass = {
+  name: 'Wobble',
+
+  uniforms: {
+    uTexture: null,
+    uIntensity: 0
+  },
+
+  vertexShader: /* glsl */ `
+    varying vec2 vUv;    
+
+    void main() {
+      vUv = uv;
+      
+      gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+  }`,
+
+  fragmentShader: /* glsl */ `         
+    varying vec2 vUv;
+
+    uniform sampler2D uTexture;
+    uniform float uIntensity;
+
+    void main() {
+      vec2 modUv = vUv;
+      
+      // The received intensity goes from 0 to 1, but we want
+      // our effect intensity  to spring from 0 to 1 and back to 0
+      float modTimer = uIntensity > 0.5 ?  1. - uIntensity : uIntensity * 2.;
+      
+      float displacement = sin(30. * vUv.y) * 0.03 * modTimer;
+      modUv.x += displacement;
+      
+      vec4 tex = texture2D(uTexture, modUv);         
+      
+      gl_FragColor = tex;
+  }`
+};
+
+```
+
+(Aside: again, you might be asking, why can't I just vibe code this? Well, you can, LLMs are a great help with shaders. The hard part sometimes is managing to articulate in words the very visual thing you want the shader to do.)
+
+There's more we could do with this. Right now we're just displacing the scene texture, but we could easily also distort the colors. Say we want the scene to flicker black and white on impact:
+
+```glsl
+float luminance = (tex.r+tex.g+tex.b)/3.0;
+vec4 blackAndWhite = vec4(luminance, luminance, luminance, 0.5);
+
+gl_FragColor = mix(tex, blackAndWhite, modTimer);
+```
+
+This may seem a lot of work for a detail, but the overall result is simply a lot better. And this isn't limited to "game" type scenarios, with a little care it can be used to great effect in "normal" websites too.
+
