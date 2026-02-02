@@ -33,7 +33,7 @@
   let RenderedComponent = $derived.by<Promise<Component>>(
     async () => {
       const module = await import(
-        `./${currentScene.id}/scene.svelte`
+        `./${currentScene.id.replace("-scene", "")}/scene.svelte`
       );
       return module.default;
     }
@@ -66,16 +66,17 @@
   {/await}
 
   <div class="btn next-scene">
-    <div class="scene-name">
-      {#if showAbout}
-        <a href={resolve(`/shadings/${currentScene.id}`)}>
-          {currentScene.name} (about this)
-        </a>
-      {:else}
-        {currentScene.name}
-      {/if}
-    </div>
-
+    {#if currentScene}
+      <div class="scene-name">
+        {#if showAbout}
+          <a href={resolve(`/shadings/${currentScene.id}`)}>
+            {currentScene.name} (about this)
+          </a>
+        {:else}
+          {currentScene.name}
+        {/if}
+      </div>
+    {/if}
     /
 
     <button type="button" onclick={nextScene}>

@@ -2,9 +2,9 @@ import type { Snippet } from "svelte";
 import type { HTMLButtonAttributes } from "svelte/elements";
 
 export const scenes = [
-  { id: "lakes", name: "Lakes" },
-  { id: "glow", name: "Glow" },
-  { id: "liquill", name: "Liquill" }
+  { id: "lakes-scene", name: "Lakes" },
+  { id: "glow-scene", name: "Glow" },
+  { id: "liquill-scene", name: "Liquill" }
 ] as const;
 
 export type SceneId = (typeof scenes)[number]["id"];
