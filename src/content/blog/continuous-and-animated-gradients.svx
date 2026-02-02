@@ -4,7 +4,11 @@ description: >
   Exploring how to create a single animated gradient that works across a bunch
   of HTML and SVG elements.
 publishedAt: 2023-10-09T23:00:00.000Z
+position: 2
 canonical: 'https://subvisual.com/blog/posts/continuous-animated-gradients/'
+tags:
+ - frontend
+ - CSS
 ---
 
 *This article was originally written for [Subvisual](https://subvisual.com/blog).*

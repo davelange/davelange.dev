@@ -5,6 +5,7 @@ description: Using slow motion to make it easier to coordinate CSS animations
 canonical: https://content.subvisual.com/using-slow-motion-to-make-better-css-animations/
 tags:  
   - frontend
+  - CSS
 ---
 
 # Using slow motion to make better CSS animations

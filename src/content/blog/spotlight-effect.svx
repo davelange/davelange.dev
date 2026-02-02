@@ -3,9 +3,9 @@ title: Spotlight effect with JS and CSS
 publishedAt: 2022-04-09
 description: Spotlight effects can be a pretty creative way of revealing content on your website. And they’re surprisingly easy to create with a little JS and CSS!
 canonical: https://blog.finiam.com/blog/spotlight-effect-with-js-and-css
-tags:
-  - visual
+tags:  
   - frontend
+  - CSS
 coverImage: /public/media/spotlight.png
 ---
 

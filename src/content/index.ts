@@ -12,6 +12,7 @@ const blogPostSchema = z.object({
 
   tags: z.array(z.string()).optional().default([]),
   draft: z.boolean().optional().default(false),
+  position: z.number().optional().default(1000),
   featured: z.boolean().optional().default(false),
   headings: z
     .array(

@@ -4,6 +4,7 @@ publishedAt: 2026-01-05
 description: Glow through glass, using three.js MeshPhysicalMaterial and shaders
 tags:
   - creative coding
+  - 3D
 ---
 
 # Glow

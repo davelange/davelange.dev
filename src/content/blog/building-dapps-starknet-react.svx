@@ -4,7 +4,6 @@ publishedAt: 2023-02-09
 description: Need some content to repeat across the screen and endlessly loop round and round? In this blog post, I take a look at how to create an infinite looper with React JS and CSS animations.
 canonical: https://blog.finiam.com/blog/building-dapps-with-starknet-react
 tags:
-  - javascript
   - frontend
   - web3
 ---

@@ -3,6 +3,7 @@ title: Infinite looping React component
 publishedAt: 2022-01-01
 description: A look into how flexible and useful stores can be in Svelte. Simple stores, custom stores, stores of stores - there's a lot of options out there.
 canonical: https://blog.finiam.com/blog/infinite-looping-react-component
+position: 1
 tags:
   - react
   - frontend

@@ -3,8 +3,10 @@ title: Warping 3D scenes with shaders
 publishedAt: 2025-08-29
 description: Warping effects with post processing
 canonical: https://content.subvisual.com/warping-3d-scenes-with-shaders/
+position: 0
 tags:  
   - creative coding
+  - 3D
 ---
 
 # Warping 3D scenes with shaders

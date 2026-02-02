@@ -9,7 +9,6 @@ canonical: >-
   https://subvisual.com/blog/posts/guide-move-things-gyroscopes-mousemove-css-perspective/
 tags:
   - frontend
-  - visual
 ---
 
 A common way of adding some life to a UI is through movement, especially when that movement is based on user actions. Let's take a look at how that's achieved in this demo:

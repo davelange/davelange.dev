@@ -7,8 +7,8 @@ publishedAt: 2024-05-01T23:00:00.000Z
 canonical: "https://subvisual.com/blog"
 tags:
   - 3D
-  - visual
   - frontend
+  - svelte
 coverImage: /public/media/cubes.png
 ---
 

@@ -37,7 +37,7 @@ class Collection<
   }
 
   compileEntries() {
-    console.log("Compiling entries...");
+    if (import.meta.env.DEV) console.log("Compiling entries...");
     const entries: Array<Item<T>> = [];
     const paths = import.meta.glob(`/src/content/**/*.svx`, {
       eager: true
@@ -142,7 +142,7 @@ class Collection<
   }
 
   async getEntry(slug: string) {
-    console.warn(`Getting entry ${slug}`);
+    if (import.meta.env.DEV) console.warn(`Getting entry ${slug}`);
 
     try {
       const modules = import.meta.glob("./**/*.svx");
