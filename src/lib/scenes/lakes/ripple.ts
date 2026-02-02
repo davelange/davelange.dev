@@ -36,7 +36,7 @@ export class Ripple {
     this.mesh.position.x = x;
     this.mesh.position.y = y;
     this.mesh.visible = true;
-    this.mesh.material.opacity = 0.8;
+    this.mesh.material.opacity = 0.9;
     this.mesh.scale.setX(1);
     this.mesh.scale.setY(1);
   }

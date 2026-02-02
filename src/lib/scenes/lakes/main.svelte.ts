@@ -62,14 +62,14 @@ export class LakesScene {
 
   settings = {
     shader: {
-      u_waveScale: 10,
-      u_showWaves: false,
+      u_wave_scale: 10,
+      u_show_waves: false,
       u_progress: new Tween(0, { duration: 2800, easing: expoInOut }),
-      u_starX: new Tween(0, { duration: 20, easing: cubicOut }),
-      u_bgColor: new THREE.Color(
+      u_star_x: new Tween(0, { duration: 20, easing: cubicOut }),
+      u_bg_color: new THREE.Color(
         this.colorConfig[0].primary
       ).convertLinearToSRGB(),
-      u_bgColorSecondary: new THREE.Color(
+      u_bg_color_secondary: new THREE.Color(
         this.colorConfig[0].secondary
       ).convertLinearToSRGB()
     },
@@ -165,12 +165,12 @@ export class LakesScene {
   }
 
   updateColorSettings() {
-    this.settings.shader.u_bgColor.set(
+    this.settings.shader.u_bg_color.set(
       new THREE.Color(
         this.colorConfig[this.state.phase].primary
       ).convertLinearToSRGB()
     );
-    this.settings.shader.u_bgColorSecondary.set(
+    this.settings.shader.u_bg_color_secondary.set(
       new THREE.Color(
         this.colorConfig[this.state.phase].secondary
       ).convertLinearToSRGB()
@@ -279,23 +279,23 @@ export class LakesScene {
       });
     this.gui
       .addColor(
-        { u_bgColor: this.settings.shader.u_bgColor },
+        { u_bgColor: this.settings.shader.u_bg_color },
         "u_bgColor"
       )
       .name("Color")
       .onFinishChange((val: string) => {
-        this.settings.shader.u_bgColor.set(new THREE.Color(val));
+        this.settings.shader.u_bg_color.set(new THREE.Color(val));
       });
     this.gui
       .addColor(
         {
-          u_bgColorSecondary: this.settings.shader.u_bgColorSecondary
+          u_bg_color_secondary: this.settings.shader.u_bg_color
         },
-        "u_bgColorSecondary"
+        "u_bg_color_secondary"
       )
       .name("Secondary color")
       .onFinishChange((val: string) => {
-        this.settings.shader.u_bgColorSecondary.set(
+        this.settings.shader.u_bg_color_secondary.set(
           new THREE.Color(val)
         );
       });
@@ -321,21 +321,21 @@ export class LakesScene {
     this.composer = new EffectComposer(this.renderer);
     this.shaderPass = new ShaderPass(LakePass);
     this.shaderPass.uniforms.u_time = new THREE.Uniform(0);
-    this.shaderPass.uniforms.u_starX = new THREE.Uniform(0);
+    this.shaderPass.uniforms.u_star_x = new THREE.Uniform(0);
     this.shaderPass.uniforms.u_width = new THREE.Uniform(this.width);
     this.shaderPass.uniforms.u_height = new THREE.Uniform(
       this.height
     );
-    this.shaderPass.uniforms.u_bgColor = new THREE.Uniform(
-      this.settings.shader.u_bgColor
+    this.shaderPass.uniforms.u_bg_color = new THREE.Uniform(
+      this.settings.shader.u_bg_color
     );
-    this.shaderPass.uniforms.u_bgColorSecondary = new THREE.Uniform(
-      this.settings.shader.u_bgColorSecondary
+    this.shaderPass.uniforms.u_bg_color_secondary = new THREE.Uniform(
+      this.settings.shader.u_bg_color_secondary
     );
-    this.shaderPass.uniforms.u_starTexture = new THREE.Uniform(
+    this.shaderPass.uniforms.u_star_texture = new THREE.Uniform(
       loadTexture("/assets/lakes/stars6.png")
     );
-    this.shaderPass.uniforms.u_paperTexture = new THREE.Uniform(
+    this.shaderPass.uniforms.u_paper_texture = new THREE.Uniform(
       loadTexture("/assets/lakes/paper2.png")
     );
 
@@ -371,7 +371,7 @@ export class LakesScene {
     if (this.state.isEditing) {
       this.clearTimeouts();
 
-      this.settings.shader.u_starX.set(1);
+      this.settings.shader.u_star_x.set(1);
       this.settings.shader.u_progress.set(0);
       this.state.phase = 0;
       this.pubs.publish("phase", this.state.phase);
@@ -386,7 +386,7 @@ export class LakesScene {
   async moveScene() {
     if (this.state.isEditing) return;
 
-    this.settings.shader.u_starX.set(1);
+    this.settings.shader.u_star_x.set(1);
     await this.wait(6000);
     await this.settings.shader.u_progress.set(1);
     this.state.phase = this.nextPhase;
@@ -418,7 +418,7 @@ export class LakesScene {
     await this.settings.shader.u_progress.set(0, {
       delay: 500
     });
-    this.settings.shader.u_starX.set(0);
+    this.settings.shader.u_star_x.set(0);
 
     this.moveScene();
   }
@@ -457,8 +457,8 @@ export class LakesScene {
     this.shaderPass.uniforms.u_lakes.value = this.lakeUniforms;
     this.shaderPass.uniforms.u_progress.value =
       this.settings.shader.u_progress.current;
-    this.shaderPass.uniforms.u_starX.value =
-      this.settings.shader.u_starX.current;
+    this.shaderPass.uniforms.u_star_x.value =
+      this.settings.shader.u_star_x.current;
     this.shaderPass.uniforms.u_displacement.value =
       this.preTexture.texture;
     this.shaderPass.material.uniforms.u_time.value = elapsedTime;
