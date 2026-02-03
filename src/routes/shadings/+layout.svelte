@@ -12,7 +12,7 @@
   let { children } = $props();
 
   let currentScene = $derived(
-    getSceneByPath(page.params.slug || "lakes")
+    getSceneByPath(page.params.slug || "lakes-scene")
   );
 </script>
 
@@ -35,7 +35,7 @@
         <div class="scene-list">
           {#each scenes as scene (scene.id)}
             <a
-              href={resolve(`/shadings/${scene.id}`)}
+              href={resolve(`/shadings/${scene.path}`)}
               class:active={scene.id === page.params.slug}
             >
               {scene.name}
