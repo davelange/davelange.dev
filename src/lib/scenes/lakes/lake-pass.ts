@@ -54,7 +54,6 @@ export const LakePass = {
             varying vec2 vuv;
 
             float threshold = 0.001;
-            float bank_depth = 100.0;
             float perspective_factor = 3.8;
             float PI = 3.141592653589793238;
 
@@ -123,54 +122,35 @@ export const LakePass = {
                 vec4 paper_texture = texture2D(u_paper_texture, paper_point * 3.);
 
                 // Render lakes
-                float cut_off = 0.;
-                bank_depth = floor(bank_depth - 99. * (pow(vuv.y, 5.))); // Reduce bank depth in perspective
-
                 int lake_count = lakes.length();
                 vec4 star_val = vec4(vec3(star_alpha_post), 1.);
 
-                for(float i = 0.; i < bank_depth; i++) {
-                    float intensity = 0.0;
-                    vec2 step_offset = vec2(0., 0.001 * i);
+                // Render banks
+                float bank_intensity = 0.0;
+                float lake_intensity = 0.0;
+                float bank_offset = 0.2 * (pow(1. - vuv.y, 1.));
 
-                    for(int j = 0; j < lake_count; j++) {
-                        vec2 offset_pos = lakes[j].position + step_offset;                        
-                        float d = length(offset_pos);
+                for(int j = 0; j < lake_count; j++) {
+                    float d = length(lakes[j].position);
+                    float offset_d = length(lakes[j].position + vec2(0, bank_offset));
                     
-                        intensity += lakes[j].radius / ((d * d) + threshold);
-                    }
-
-                    float to_color_alpha = smoothstep(0.10, 0.1001, intensity);
-
-                    if(i == (bank_depth - 1.)) {
-                        // Actual lake
-                        final_color = mix(final_color, star_val, to_color_alpha);
-                    } else {
-                        // Cut off for depth
-                        if(i == 0.) {
-                            cut_off = to_color_alpha;
-                        }
-                        // Banks
-                        final_color = mix(final_color, bg_color_secondary, to_color_alpha);
-                    }
+                    bank_intensity += lakes[j].radius / ((d * d) + threshold);
+                    lake_intensity += lakes[j].radius / ((offset_d * offset_d) + threshold);
                 }
+                float to_color_alpha_bank = smoothstep(0.10, 0.1001, bank_intensity);
+                float to_color_alpha_lake = smoothstep(0.10, 0.1001, lake_intensity);
 
-                // Bring up bg color to cut off lake depth
-                final_color = mix(final_color, bg_color,  max(0., 1. - cut_off - u_progress));
-
+                final_color = mix(final_color, bg_color_secondary, to_color_alpha_bank);
+                final_color = mix(final_color, star_val, to_color_alpha_bank * to_color_alpha_lake);
+    
                 // Brush texture
                 final_color = vec4(blendMultiply(final_color.rgb, paper_texture.rgb, 0.85), 1.);
-
 
                 if(u_show_waves) {
                     gl_FragColor = vec4(wave_intensity, 0.,0., 1.);
 
                 } else {
-                    //final_color += vec4(displacement, 0.,0.,1.);
                     gl_FragColor = final_color;
-                    //gl_FragColor = vec4(displacement, 0.,0.,1.);
-                    //gl_FragColor = vec4(paper_texture.rgb, 1.);
-                    //gl_FragColor = vec4(alt, 0., 0., 1.);
                 }
 
             }          

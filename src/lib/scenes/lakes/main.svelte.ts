@@ -7,7 +7,7 @@ import GUI from "lil-gui";
 import { loadTexture, rand } from "./utils";
 import { colorsDark, colorsLight, lakeConfigs, text } from "./config";
 import { RippleManager } from "./ripple";
-import { LakePass } from "./lakePass";
+import { LakePass } from "./lake-pass";
 import { Tween } from "svelte/motion";
 import { cubicOut, expoInOut } from "svelte/easing";
 import { themeManager } from "$lib/theme.svelte";
@@ -289,7 +289,7 @@ export class LakesScene {
     this.gui
       .addColor(
         {
-          u_bg_color_secondary: this.settings.shader.u_bg_color
+          u_bg_color_secondary: this.settings.shader.u_bg_color_secondary
         },
         "u_bg_color_secondary"
       )
