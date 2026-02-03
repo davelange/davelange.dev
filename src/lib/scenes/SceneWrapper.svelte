@@ -9,31 +9,22 @@
   import type { HTMLButtonAttributes } from "svelte/elements";
 
   let {
-    initialScene,
     scene,
     withRouting,
     showAbout
   }: {
-    initialScene?: SceneId;
     scene?: SceneId;
     withRouting?: boolean;
     showAbout?: boolean;
   } = $props();
 
-  let sceneIdx = $state(
-    scenes.findIndex((scene) => scene.id === initialScene)
-  );
-
-  let currentScene = $derived(
-    scene
-      ? scenes.find((s) => scene === s.id)!
-      : scenes[sceneIdx % scenes.length]
-  );
+  let sceneIdx = $state(scenes.findIndex((s) => s.id === scene));
+  let currentScene = $derived(scenes[sceneIdx % scenes.length]);
 
   let RenderedComponent = $derived.by<Promise<Component>>(
     async () => {
       const module = await import(
-        `./${currentScene.id.replace("-scene", "")}/scene.svelte`
+        `./${currentScene.id}/scene.svelte`
       );
       return module.default;
     }
@@ -43,8 +34,7 @@
     sceneIdx++;
 
     if (withRouting) {
-      const nextName = scenes[sceneIdx % scenes.length].id;
-
+      const nextName = scenes[sceneIdx % scenes.length].path;
       goto(resolve(`/shadings/${nextName}`));
     }
   }
@@ -69,7 +59,7 @@
     {#if currentScene}
       <div class="scene-name">
         {#if showAbout}
-          <a href={resolve(`/shadings/${currentScene.id}`)}>
+          <a href={resolve(`/shadings/${currentScene.path}`)}>
             {currentScene.name} (about this)
           </a>
         {:else}

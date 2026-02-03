@@ -209,10 +209,10 @@ export class GlowScene {
   cubeRestingRotationEnabled = true;
 
   updateCube() {
-    if(!this.mouseTracker?.active) {
-      this.cube.rotation.x += 0.002
-      this.cube.rotation.y += 0.003
-      return
+    if (!this.mouseTracker?.active) {
+      this.cube.rotation.x += 0.002;
+      this.cube.rotation.y += 0.003;
+      return;
     }
 
     const [rx, ry] = this.cubeRotationTween.current;

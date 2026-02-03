@@ -12,7 +12,7 @@ export const SwirlPass = {
     displacement: { value: null },
     showWaves: { value: false },
     showRipples: { value: false },
-    showGrain: { value: false },
+    showGrain: { value: false }
   },
 
   vertexShader: /* glsl */ `
@@ -104,5 +104,5 @@ export const SwirlPass = {
             } else {
                 gl_FragColor = color;
             }			
-		}`,
+		}`
 };

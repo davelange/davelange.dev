@@ -18,7 +18,7 @@ export class MouseTracker {
 
   xCenter = window.innerWidth / 2;
   yCenter = window.innerHeight / 2;
-  active = false
+  active = false;
 
   onForce: (args: OnChange) => void;
 
@@ -76,11 +76,11 @@ export class MouseTracker {
     if ((xDelta > 0.5 || yDelta > 0.5) && !this.deltaLocked) {
       this.prevData = [x, y];
       this.deltaLocked = true;
-      this.active = true
+      this.active = true;
 
       setTimeout(() => {
         this.deltaLocked = false;
-        this.active = false
+        this.active = false;
       }, 4000);
     }
 

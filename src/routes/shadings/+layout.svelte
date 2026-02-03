@@ -4,10 +4,7 @@
   import MainLayout from "$lib/components/MainLayout.svelte";
   import Sidebar from "$lib/components/Sidebar.svelte";
   import SidebarHeader from "$lib/components/SidebarHeader.svelte";
-  import {
-    getSceneById,
-    type SceneId
-  } from "$lib/scenes/index.svelte";
+  import { getSceneByPath } from "$lib/scenes/index.svelte";
   import SceneWrapper from "$lib/scenes/SceneWrapper.svelte";
   import { resolve } from "$app/paths";
   import { scenes } from "$lib/scenes/index.svelte";
@@ -15,7 +12,7 @@
   let { children } = $props();
 
   let currentScene = $derived(
-    getSceneById(page.params.slug || "lakes")
+    getSceneByPath(page.params.slug || "lakes")
   );
 </script>
 
@@ -50,7 +47,7 @@
   {/snippet}
 
   {#if currentScene}
-    <SceneWrapper scene={page.params.slug as SceneId} withRouting />
+    <SceneWrapper scene={currentScene.id} withRouting />
   {/if}
 
   <ListingLayout>

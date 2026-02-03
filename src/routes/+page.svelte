@@ -24,7 +24,7 @@
   </div>
 
   <div class="scene-wrapper">
-    <SceneWrapper initialScene="lakes-scene" showAbout />
+    <SceneWrapper scene="lakes" showAbout />
   </div>
 </div>
 

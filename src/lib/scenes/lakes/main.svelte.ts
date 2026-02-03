@@ -289,7 +289,8 @@ export class LakesScene {
     this.gui
       .addColor(
         {
-          u_bg_color_secondary: this.settings.shader.u_bg_color_secondary
+          u_bg_color_secondary:
+            this.settings.shader.u_bg_color_secondary
         },
         "u_bg_color_secondary"
       )

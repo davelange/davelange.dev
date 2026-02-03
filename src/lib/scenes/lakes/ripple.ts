@@ -14,7 +14,7 @@ export class Ripple {
 
   constructor({
     texture,
-    scene,
+    scene
   }: {
     texture: THREE.Texture;
     scene: THREE.Scene;
@@ -23,7 +23,7 @@ export class Ripple {
       map: texture,
       transparent: true,
       depthTest: false,
-      depthWrite: false,
+      depthWrite: false
     });
     this.mesh = new THREE.Mesh(geometry, this.material);
     this.mesh.rotateX(degToRad(60));
@@ -60,7 +60,7 @@ export class RippleManager {
   init({
     count,
     texture,
-    scene,
+    scene
   }: {
     count: number;
     texture: THREE.Texture;
@@ -74,7 +74,7 @@ export class RippleManager {
 
   createRipple({
     mousePos,
-    prevMousePos,
+    prevMousePos
   }: {
     mousePos: THREE.Vector2;
     prevMousePos: THREE.Vector2;
@@ -88,7 +88,7 @@ export class RippleManager {
 
     this.ripples[this.currentRipple].place({
       x: mousePos.x,
-      y: mousePos.y,
+      y: mousePos.y
     });
 
     this.currentRipple = (this.currentRipple + 1) % this.count;

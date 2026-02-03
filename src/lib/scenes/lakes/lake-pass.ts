@@ -14,7 +14,7 @@ export const LakePass = {
     u_star_texture: { value: null },
     u_paper_texture: { value: null },
     u_bg_color: { value: null },
-    u_bg_color_secondary: { value: null },
+    u_bg_color_secondary: { value: null }
   },
 
   vertexShader: /* glsl */ `
@@ -154,5 +154,5 @@ export const LakePass = {
                 }
 
             }          
-          `,
+          `
 };

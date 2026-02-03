@@ -2,15 +2,19 @@ import type { Snippet } from "svelte";
 import type { HTMLButtonAttributes } from "svelte/elements";
 
 export const scenes = [
-  { id: "lakes-scene", name: "Lakes" },
-  { id: "glow-scene", name: "Glow" },
-  { id: "liquill-scene", name: "Liquill" }
+  { id: "lakes", name: "Lakes", path: "lakes-scene" },
+  { id: "glow", name: "Glow", path: "glow-scene" },
+  { id: "liquill", name: "Liquill", path: "liquill-scene" }
 ] as const;
 
 export type SceneId = (typeof scenes)[number]["id"];
 
 export function getSceneById(id: string) {
   return scenes.find((scene) => scene.id === id);
+}
+
+export function getSceneByPath(path: string) {
+  return scenes.find((scene) => scene.path === path);
 }
 
 export type SceneButtonSlot = Snippet<
